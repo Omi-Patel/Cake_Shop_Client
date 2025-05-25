@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Header from "@/components/Header";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -16,8 +17,9 @@ export const Route = createFileRoute("/")({
 function App() {
   return (
     <div className="min-h-screen">
+      <Header />
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-pink-100 to-purple-100 py-20">
+      <section className="bg-gradient-to-r from-pink-100 to-purple-100 py-20 pt-24">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h1 className="text-5xl font-bold text-gray-800 mb-4">

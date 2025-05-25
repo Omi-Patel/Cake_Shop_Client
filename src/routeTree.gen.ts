@@ -11,14 +11,56 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AppRouteImport } from './routes/app/route'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthRegisterIndexImport } from './routes/auth/register/index'
+import { Route as AuthLoginIndexImport } from './routes/auth/login/index'
+import { Route as AppProductsIndexImport } from './routes/app/products/index'
+import { Route as AppContactUsIndexImport } from './routes/app/contact-us/index'
+import { Route as AppAboutIndexImport } from './routes/app/about/index'
 
 // Create/Update Routes
+
+const AppRouteRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthRegisterIndexRoute = AuthRegisterIndexImport.update({
+  id: '/auth/register/',
+  path: '/auth/register/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthLoginIndexRoute = AuthLoginIndexImport.update({
+  id: '/auth/login/',
+  path: '/auth/login/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppProductsIndexRoute = AppProductsIndexImport.update({
+  id: '/products/',
+  path: '/products/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppContactUsIndexRoute = AppContactUsIndexImport.update({
+  id: '/contact-us/',
+  path: '/contact-us/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppAboutIndexRoute = AppAboutIndexImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -32,39 +74,143 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/app/about/': {
+      id: '/app/about/'
+      path: '/about'
+      fullPath: '/app/about'
+      preLoaderRoute: typeof AppAboutIndexImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/app/contact-us/': {
+      id: '/app/contact-us/'
+      path: '/contact-us'
+      fullPath: '/app/contact-us'
+      preLoaderRoute: typeof AppContactUsIndexImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/app/products/': {
+      id: '/app/products/'
+      path: '/products'
+      fullPath: '/app/products'
+      preLoaderRoute: typeof AppProductsIndexImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/auth/login/': {
+      id: '/auth/login/'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/register/': {
+      id: '/auth/register/'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
+interface AppRouteRouteChildren {
+  AppAboutIndexRoute: typeof AppAboutIndexRoute
+  AppContactUsIndexRoute: typeof AppContactUsIndexRoute
+  AppProductsIndexRoute: typeof AppProductsIndexRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppAboutIndexRoute: AppAboutIndexRoute,
+  AppContactUsIndexRoute: AppContactUsIndexRoute,
+  AppProductsIndexRoute: AppProductsIndexRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRouteWithChildren
+  '/app/about': typeof AppAboutIndexRoute
+  '/app/contact-us': typeof AppContactUsIndexRoute
+  '/app/products': typeof AppProductsIndexRoute
+  '/auth/login': typeof AuthLoginIndexRoute
+  '/auth/register': typeof AuthRegisterIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRouteWithChildren
+  '/app/about': typeof AppAboutIndexRoute
+  '/app/contact-us': typeof AppContactUsIndexRoute
+  '/app/products': typeof AppProductsIndexRoute
+  '/auth/login': typeof AuthLoginIndexRoute
+  '/auth/register': typeof AuthRegisterIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRouteWithChildren
+  '/app/about/': typeof AppAboutIndexRoute
+  '/app/contact-us/': typeof AppContactUsIndexRoute
+  '/app/products/': typeof AppProductsIndexRoute
+  '/auth/login/': typeof AuthLoginIndexRoute
+  '/auth/register/': typeof AuthRegisterIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/about'
+    | '/app/contact-us'
+    | '/app/products'
+    | '/auth/login'
+    | '/auth/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/app'
+    | '/app/about'
+    | '/app/contact-us'
+    | '/app/products'
+    | '/auth/login'
+    | '/auth/register'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/app/about/'
+    | '/app/contact-us/'
+    | '/app/products/'
+    | '/auth/login/'
+    | '/auth/register/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  AuthLoginIndexRoute: typeof AuthLoginIndexRoute
+  AuthRegisterIndexRoute: typeof AuthRegisterIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthRegisterIndexRoute: AuthRegisterIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +223,40 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/app",
+        "/auth/login/",
+        "/auth/register/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/app": {
+      "filePath": "app/route.tsx",
+      "children": [
+        "/app/about/",
+        "/app/contact-us/",
+        "/app/products/"
+      ]
+    },
+    "/app/about/": {
+      "filePath": "app/about/index.tsx",
+      "parent": "/app"
+    },
+    "/app/contact-us/": {
+      "filePath": "app/contact-us/index.tsx",
+      "parent": "/app"
+    },
+    "/app/products/": {
+      "filePath": "app/products/index.tsx",
+      "parent": "/app"
+    },
+    "/auth/login/": {
+      "filePath": "auth/login/index.tsx"
+    },
+    "/auth/register/": {
+      "filePath": "auth/register/index.tsx"
     }
   }
 }

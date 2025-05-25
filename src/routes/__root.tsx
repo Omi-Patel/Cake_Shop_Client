@@ -1,12 +1,18 @@
 import { Outlet, createRootRoute } from "@tanstack/react-router";
 
-import Header from "../components/Header";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React from "react";
+import { Toaster } from "sonner";
+// Create a client
+const queryClient = new QueryClient();
 
 export const Route = createRootRoute({
   component: () => (
-    <>
-      <Header />
-      <Outlet />
-    </>
+    <QueryClientProvider client={queryClient}>
+      <React.Fragment>
+        <Toaster />
+        <Outlet />
+      </React.Fragment>
+    </QueryClientProvider>
   ),
 });
