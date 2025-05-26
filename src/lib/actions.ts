@@ -57,6 +57,11 @@ interface ApiResponse<T> {
   data: T[];
 }
 
+interface SingleProductResponse {
+  success: boolean;
+  data: Product;
+}
+
 // Products
 export async function getProducts(): Promise<ApiResponse<Product>> {
   try {
@@ -67,9 +72,9 @@ export async function getProducts(): Promise<ApiResponse<Product>> {
   }
 }
 
-export async function getProductById(id: string): Promise<Product> {
+export async function getProductById(id: string): Promise<SingleProductResponse> {
   try {
-    const response = await axios.get<Product>(`${API_BASE_URL}/products/${id}`);
+    const response = await axios.get<SingleProductResponse>(`${API_BASE_URL}/products/${id}`);
     return response.data;
   } catch (error) {
     throw new Error("Failed to get product by ID");

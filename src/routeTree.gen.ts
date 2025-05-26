@@ -18,6 +18,7 @@ import { Route as AuthLoginIndexImport } from './routes/auth/login/index'
 import { Route as AppProductsIndexImport } from './routes/app/products/index'
 import { Route as AppContactUsIndexImport } from './routes/app/contact-us/index'
 import { Route as AppAboutIndexImport } from './routes/app/about/index'
+import { Route as AppProductsProductIdImport } from './routes/app/products/$productId'
 
 // Create/Update Routes
 
@@ -63,6 +64,12 @@ const AppAboutIndexRoute = AppAboutIndexImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 
+const AppProductsProductIdRoute = AppProductsProductIdImport.update({
+  id: '/products/$productId',
+  path: '/products/$productId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -80,6 +87,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app'
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRoute
+    }
+    '/app/products/$productId': {
+      id: '/app/products/$productId'
+      path: '/products/$productId'
+      fullPath: '/app/products/$productId'
+      preLoaderRoute: typeof AppProductsProductIdImport
+      parentRoute: typeof AppRouteImport
     }
     '/app/about/': {
       id: '/app/about/'
@@ -122,12 +136,14 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AppRouteRouteChildren {
+  AppProductsProductIdRoute: typeof AppProductsProductIdRoute
   AppAboutIndexRoute: typeof AppAboutIndexRoute
   AppContactUsIndexRoute: typeof AppContactUsIndexRoute
   AppProductsIndexRoute: typeof AppProductsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppProductsProductIdRoute: AppProductsProductIdRoute,
   AppAboutIndexRoute: AppAboutIndexRoute,
   AppContactUsIndexRoute: AppContactUsIndexRoute,
   AppProductsIndexRoute: AppProductsIndexRoute,
@@ -140,6 +156,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
+  '/app/products/$productId': typeof AppProductsProductIdRoute
   '/app/about': typeof AppAboutIndexRoute
   '/app/contact-us': typeof AppContactUsIndexRoute
   '/app/products': typeof AppProductsIndexRoute
@@ -150,6 +167,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
+  '/app/products/$productId': typeof AppProductsProductIdRoute
   '/app/about': typeof AppAboutIndexRoute
   '/app/contact-us': typeof AppContactUsIndexRoute
   '/app/products': typeof AppProductsIndexRoute
@@ -161,6 +179,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
+  '/app/products/$productId': typeof AppProductsProductIdRoute
   '/app/about/': typeof AppAboutIndexRoute
   '/app/contact-us/': typeof AppContactUsIndexRoute
   '/app/products/': typeof AppProductsIndexRoute
@@ -173,6 +192,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/app/products/$productId'
     | '/app/about'
     | '/app/contact-us'
     | '/app/products'
@@ -182,6 +202,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/app'
+    | '/app/products/$productId'
     | '/app/about'
     | '/app/contact-us'
     | '/app/products'
@@ -191,6 +212,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/app'
+    | '/app/products/$productId'
     | '/app/about/'
     | '/app/contact-us/'
     | '/app/products/'
@@ -235,10 +257,15 @@ export const routeTree = rootRoute
     "/app": {
       "filePath": "app/route.tsx",
       "children": [
+        "/app/products/$productId",
         "/app/about/",
         "/app/contact-us/",
         "/app/products/"
       ]
+    },
+    "/app/products/$productId": {
+      "filePath": "app/products/$productId.tsx",
+      "parent": "/app"
     },
     "/app/about/": {
       "filePath": "app/about/index.tsx",
