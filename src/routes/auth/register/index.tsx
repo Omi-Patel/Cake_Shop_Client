@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -33,7 +33,6 @@ import { Progress } from "@/components/ui/progress";
 import { createUser } from "@/lib/actions";
 import type { UserRegistration, UserResponse } from "@/schema/user-schema";
 import { userRegistrationSchema } from "@/schema/user-schema";
-import { getUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/auth/register/")({
   component: RouteComponent,
