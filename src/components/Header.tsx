@@ -22,7 +22,6 @@ import { isAuthenticated, getUser, removeToken } from "@/lib/auth";
 import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
-  Menu,
   Cake,
   Home,
   Info,

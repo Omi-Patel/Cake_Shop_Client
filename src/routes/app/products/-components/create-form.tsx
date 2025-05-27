@@ -30,7 +30,6 @@ import {
   Camera,
   Sparkles,
   Save,
-  Eye,
   DollarSign,
   Package,
   Tag,
@@ -83,7 +82,6 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [activeStep, setActiveStep] = useState(0);
-  const [previewMode, setPreviewMode] = useState(false);
 
   const [formData, setFormData] = useState({
     name: product?.name || "",
