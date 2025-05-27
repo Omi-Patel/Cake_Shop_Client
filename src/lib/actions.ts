@@ -6,6 +6,7 @@ import type {
 } from "@/schema/user-schema";
 
 import axios from "axios";
+import { getToken } from "./auth";
 
 export function getBackendUrl() {
   const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -65,30 +66,46 @@ interface SingleProductResponse {
 // Products
 export async function getProducts(): Promise<ApiResponse<Product>> {
   try {
-    const response = await axios.get<ApiResponse<Product>>(`${API_BASE_URL}/products`);
+    const response = await axios.get<ApiResponse<Product>>(
+      `${API_BASE_URL}/products`
+    );
     return response.data;
   } catch (error) {
     throw new Error("Failed to get products");
   }
 }
 
-export async function getProductById(id: string): Promise<SingleProductResponse> {
+export async function getProductById(
+  id: string
+): Promise<SingleProductResponse> {
   try {
-    const response = await axios.get<SingleProductResponse>(`${API_BASE_URL}/products/${id}`);
+    const response = await axios.get<SingleProductResponse>(
+      `${API_BASE_URL}/products/${id}`
+    );
     return response.data;
   } catch (error) {
     throw new Error("Failed to get product by ID");
   }
 }
 
-export async function createProduct(product: Product): Promise<Product> {
+export async function createProduct(product: FormData): Promise<Product> {
   try {
+    const token = getToken();
     const response = await axios.post<Product>(
       `${API_BASE_URL}/products`,
-      product
+      product,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data;
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || "Failed to create product");
+    }
     throw new Error("Failed to create product");
   }
 }
@@ -98,9 +115,16 @@ export async function updateProduct(
   product: Product
 ): Promise<Product> {
   try {
+    const token = getToken();
     const response = await axios.put<Product>(
       `${API_BASE_URL}/products/${id}`,
-      product
+      product,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data;
   } catch (error) {
@@ -110,7 +134,12 @@ export async function updateProduct(
 
 export async function deleteProduct(id: string): Promise<void> {
   try {
-    await axios.delete(`${API_BASE_URL}/products/${id}`);
+    const token = getToken();
+    await axios.delete(`${API_BASE_URL}/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   } catch (error) {
     throw new Error("Failed to delete product");
   }

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const productSchema = z.object({
-  _id: z.string(),
+  _id: z.string().optional().nullable(),
   name: z
     .string()
     .min(1, "Please add a product name")

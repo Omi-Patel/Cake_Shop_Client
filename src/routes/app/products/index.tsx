@@ -258,8 +258,8 @@ function RouteComponent() {
               >
                 <ProductCard
                   product={product}
-                  isWishlisted={wishlist.includes(product._id)}
-                  onToggleWishlist={() => toggleWishlist(product._id)}
+                  isWishlisted={wishlist.includes(product._id || "")}
+                  onToggleWishlist={() => toggleWishlist(product._id || "")}
                 />
               </div>
             ))}

@@ -18,7 +18,9 @@ import { Route as AuthLoginIndexImport } from './routes/auth/login/index'
 import { Route as AppProductsIndexImport } from './routes/app/products/index'
 import { Route as AppContactUsIndexImport } from './routes/app/contact-us/index'
 import { Route as AppAboutIndexImport } from './routes/app/about/index'
+import { Route as AppProductsCreateImport } from './routes/app/products/create'
 import { Route as AppProductsProductIdImport } from './routes/app/products/$productId'
+import { Route as AppProductsEditProductIdImport } from './routes/app/products/edit/$productId'
 
 // Create/Update Routes
 
@@ -64,9 +66,21 @@ const AppAboutIndexRoute = AppAboutIndexImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 
+const AppProductsCreateRoute = AppProductsCreateImport.update({
+  id: '/products/create',
+  path: '/products/create',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
 const AppProductsProductIdRoute = AppProductsProductIdImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppProductsEditProductIdRoute = AppProductsEditProductIdImport.update({
+  id: '/products/edit/$productId',
+  path: '/products/edit/$productId',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -93,6 +107,13 @@ declare module '@tanstack/react-router' {
       path: '/products/$productId'
       fullPath: '/app/products/$productId'
       preLoaderRoute: typeof AppProductsProductIdImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/app/products/create': {
+      id: '/app/products/create'
+      path: '/products/create'
+      fullPath: '/app/products/create'
+      preLoaderRoute: typeof AppProductsCreateImport
       parentRoute: typeof AppRouteImport
     }
     '/app/about/': {
@@ -130,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRegisterIndexImport
       parentRoute: typeof rootRoute
     }
+    '/app/products/edit/$productId': {
+      id: '/app/products/edit/$productId'
+      path: '/products/edit/$productId'
+      fullPath: '/app/products/edit/$productId'
+      preLoaderRoute: typeof AppProductsEditProductIdImport
+      parentRoute: typeof AppRouteImport
+    }
   }
 }
 
@@ -137,16 +165,20 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteRouteChildren {
   AppProductsProductIdRoute: typeof AppProductsProductIdRoute
+  AppProductsCreateRoute: typeof AppProductsCreateRoute
   AppAboutIndexRoute: typeof AppAboutIndexRoute
   AppContactUsIndexRoute: typeof AppContactUsIndexRoute
   AppProductsIndexRoute: typeof AppProductsIndexRoute
+  AppProductsEditProductIdRoute: typeof AppProductsEditProductIdRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppProductsProductIdRoute: AppProductsProductIdRoute,
+  AppProductsCreateRoute: AppProductsCreateRoute,
   AppAboutIndexRoute: AppAboutIndexRoute,
   AppContactUsIndexRoute: AppContactUsIndexRoute,
   AppProductsIndexRoute: AppProductsIndexRoute,
+  AppProductsEditProductIdRoute: AppProductsEditProductIdRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -157,22 +189,26 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/app/products/$productId': typeof AppProductsProductIdRoute
+  '/app/products/create': typeof AppProductsCreateRoute
   '/app/about': typeof AppAboutIndexRoute
   '/app/contact-us': typeof AppContactUsIndexRoute
   '/app/products': typeof AppProductsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
   '/auth/register': typeof AuthRegisterIndexRoute
+  '/app/products/edit/$productId': typeof AppProductsEditProductIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/app/products/$productId': typeof AppProductsProductIdRoute
+  '/app/products/create': typeof AppProductsCreateRoute
   '/app/about': typeof AppAboutIndexRoute
   '/app/contact-us': typeof AppContactUsIndexRoute
   '/app/products': typeof AppProductsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
   '/auth/register': typeof AuthRegisterIndexRoute
+  '/app/products/edit/$productId': typeof AppProductsEditProductIdRoute
 }
 
 export interface FileRoutesById {
@@ -180,11 +216,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/app/products/$productId': typeof AppProductsProductIdRoute
+  '/app/products/create': typeof AppProductsCreateRoute
   '/app/about/': typeof AppAboutIndexRoute
   '/app/contact-us/': typeof AppContactUsIndexRoute
   '/app/products/': typeof AppProductsIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
   '/auth/register/': typeof AuthRegisterIndexRoute
+  '/app/products/edit/$productId': typeof AppProductsEditProductIdRoute
 }
 
 export interface FileRouteTypes {
@@ -193,31 +231,37 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/products/$productId'
+    | '/app/products/create'
     | '/app/about'
     | '/app/contact-us'
     | '/app/products'
     | '/auth/login'
     | '/auth/register'
+    | '/app/products/edit/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/app'
     | '/app/products/$productId'
+    | '/app/products/create'
     | '/app/about'
     | '/app/contact-us'
     | '/app/products'
     | '/auth/login'
     | '/auth/register'
+    | '/app/products/edit/$productId'
   id:
     | '__root__'
     | '/'
     | '/app'
     | '/app/products/$productId'
+    | '/app/products/create'
     | '/app/about/'
     | '/app/contact-us/'
     | '/app/products/'
     | '/auth/login/'
     | '/auth/register/'
+    | '/app/products/edit/$productId'
   fileRoutesById: FileRoutesById
 }
 
@@ -258,13 +302,19 @@ export const routeTree = rootRoute
       "filePath": "app/route.tsx",
       "children": [
         "/app/products/$productId",
+        "/app/products/create",
         "/app/about/",
         "/app/contact-us/",
-        "/app/products/"
+        "/app/products/",
+        "/app/products/edit/$productId"
       ]
     },
     "/app/products/$productId": {
       "filePath": "app/products/$productId.tsx",
+      "parent": "/app"
+    },
+    "/app/products/create": {
+      "filePath": "app/products/create.tsx",
       "parent": "/app"
     },
     "/app/about/": {
@@ -284,6 +334,10 @@ export const routeTree = rootRoute
     },
     "/auth/register/": {
       "filePath": "auth/register/index.tsx"
+    },
+    "/app/products/edit/$productId": {
+      "filePath": "app/products/edit/$productId.tsx",
+      "parent": "/app"
     }
   }
 }

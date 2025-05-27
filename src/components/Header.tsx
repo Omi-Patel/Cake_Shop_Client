@@ -33,6 +33,7 @@ import {
   Settings,
   ShoppingCart,
   Heart,
+  PlusCircle,
 } from "lucide-react";
 
 export default function Header() {
@@ -94,19 +95,18 @@ export default function Header() {
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center space-x-4">
             {isLoggedIn ? (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 gap-2">
                 {/* Cart Icon */}
-                <Button variant="ghost" size="sm" className="relative">
-                  <ShoppingCart className="h-5 w-5 text-gray-600" />
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    2
-                  </span>
-                </Button>
-
-                {/* Wishlist Icon */}
-                <Button variant="ghost" size="sm">
-                  <Heart className="h-5 w-5 text-gray-600" />
-                </Button>
+                <Link to="/app/products/create">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <PlusCircle className="h-5 w-5 text-gray-600" />
+                    Add Product
+                  </Button>
+                </Link>
 
                 {/* User Dropdown */}
                 <DropdownMenu>
@@ -192,9 +192,7 @@ export default function Header() {
                         Sweet Dreams
                       </SheetTitle>
                     </div>
-                    <SheetDescription className="text-sm text-gray-500">
-                      
-                    </SheetDescription>
+                    <SheetDescription className="text-sm text-gray-500"></SheetDescription>
                   </SheetHeader>
 
                   {/* Mobile Navigation */}

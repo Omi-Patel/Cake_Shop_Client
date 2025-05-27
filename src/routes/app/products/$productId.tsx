@@ -1,7 +1,7 @@
 "use client";
 
 import { createFileRoute } from "@tanstack/react-router";
-import { getProductById } from "@/lib/actions";
+import { deleteProduct, getProductById } from "@/lib/actions";
 import type { Product } from "@/schema/product-schema";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,9 +21,12 @@ import {
   Plus,
   Minus,
   Share2,
+  Pencil,
+  Trash,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 interface ApiResponse {
   success: boolean;
@@ -58,18 +61,58 @@ function ProductDetailsPage() {
 
   const images = product.images?.length > 0 ? product.images : [null];
 
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      await deleteProduct(productId);
+      toast.success("Product deleted successfully");
+      navigate({ to: "/app/products" });
+    } catch (error) {
+      toast.error("Failed to delete product");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <div className="container mx-auto px-6 py-6">
-        <Button
-          variant="ghost"
-          className="hover:bg-gray-100 rounded-xl"
-          onClick={() => navigate({ to: "/app/products" })}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Products
-        </Button>
+        <div className="flex justify-between items-center">
+          <Button
+            variant="ghost"
+            className="hover:bg-gray-100 rounded-xl"
+            onClick={() => navigate({ to: "/app/products" })}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Products
+          </Button>
+          <div className="flex sm:flex-row flex-col gap-2 items-center">
+            <Button
+              variant="outline"
+              className="hover:bg-gray-100 rounded-xl"
+              onClick={() => {
+                if (!product._id) return;
+                navigate({
+                  to: "/app/products/edit/$productId",
+                  params: { productId: product._id },
+                });
+              }}
+            >
+              <Pencil className="h-4 w-4 mr-2" />
+              Edit Product
+            </Button>
+
+            <Button
+              variant="destructive"
+              className="hover:bg-red-800 rounded-xl "
+              onClick={() => {
+                if (!product._id) return;
+                handleDeleteProduct(product._id);
+              }}
+            >
+              <Trash className="h-4 w-4 mr-2" />
+              Delete Product
+            </Button>
+          </div>
+        </div>
       </div>
 
       <div className="container mx-auto px-6 pb-12">
@@ -100,7 +143,9 @@ function ProductDetailsPage() {
                 >
                   <Heart
                     className={`h-5 w-5 ${
-                      isWishlisted ? "text-red-500 fill-current" : "text-gray-600"
+                      isWishlisted
+                        ? "text-red-500 fill-current"
+                        : "text-gray-600"
                     }`}
                   />
                 </Button>
@@ -148,10 +193,13 @@ function ProductDetailsPage() {
           <div className="space-y-6">
             {/* Header */}
             <div>
-              <Badge variant="secondary" className="mb-4 bg-amber-100 text-amber-700">
+              <Badge
+                variant="secondary"
+                className="mb-4 bg-amber-100 text-amber-700"
+              >
                 {product.category}
               </Badge>
-              
+
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
                 {product.name}
               </h1>
@@ -161,13 +209,19 @@ function ProductDetailsPage() {
                 <div className="flex items-center gap-1">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 text-amber-400 fill-current" />
+                      <Star
+                        key={i}
+                        className="h-4 w-4 text-amber-400 fill-current"
+                      />
                     ))}
                   </div>
                   <span className="text-gray-700 font-medium ml-1">4.8</span>
                 </div>
                 <span className="text-gray-500 text-sm">120+ reviews</span>
-                <Badge variant="outline" className="text-green-600 border-green-200">
+                <Badge
+                  variant="outline"
+                  className="text-green-600 border-green-200"
+                >
                   Verified Quality
                 </Badge>
               </div>
@@ -177,13 +231,16 @@ function ProductDetailsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Price</p>
-                    <p className="text-3xl font-bold text-gray-900">₹{product.price}</p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      ₹{product.price}
+                    </p>
                   </div>
-                  <Badge 
+                  <Badge
                     variant={product.isAvailable ? "default" : "secondary"}
-                    className={product.isAvailable 
-                      ? "bg-green-100 text-green-700" 
-                      : "bg-gray-100 text-gray-600"
+                    className={
+                      product.isAvailable
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
                     }
                   >
                     {product.isAvailable ? "Available Now" : "Coming Soon"}
@@ -203,7 +260,7 @@ function ProductDetailsPage() {
             </div>
 
             {/* Ingredients */}
-            { product.ingredients && product.ingredients.length > 0 && (
+            {product.ingredients && product.ingredients.length > 0 && (
               <div className="bg-gray-50 rounded-2xl p-6">
                 <div className="flex items-center text-gray-800 mb-4">
                   <ChefHat className="h-5 w-5 mr-2 text-amber-500" />
@@ -213,7 +270,9 @@ function ProductDetailsPage() {
                   {product.ingredients.map((ingredient, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
-                      <span className="text-gray-700 text-sm">{ingredient}</span>
+                      <span className="text-gray-700 text-sm">
+                        {ingredient}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -225,7 +284,9 @@ function ProductDetailsPage() {
               <div className="bg-red-50 rounded-2xl p-6 border border-red-100">
                 <div className="flex items-center text-red-700 mb-3">
                   <AlertTriangle className="h-5 w-5 mr-2" />
-                  <h3 className="text-lg font-semibold">Allergen Information</h3>
+                  <h3 className="text-lg font-semibold">
+                    Allergen Information
+                  </h3>
                 </div>
                 <p className="text-red-700 font-medium">
                   Contains: {product.allergens.join(", ")}
@@ -235,7 +296,9 @@ function ProductDetailsPage() {
 
             {/* Quantity Selector */}
             <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quantity</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Quantity
+              </h3>
               <div className="flex items-center justify-between">
                 <div className="flex items-center border border-gray-200 rounded-xl">
                   <Button
@@ -277,7 +340,9 @@ function ProductDetailsPage() {
                 >
                   <Heart
                     className={`h-4 w-4 mr-2 ${
-                      isWishlisted ? "text-red-500 fill-current" : "text-gray-600"
+                      isWishlisted
+                        ? "text-red-500 fill-current"
+                        : "text-gray-600"
                     }`}
                   />
                   {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
@@ -308,7 +373,9 @@ function ProductDetailsPage() {
               <div className="bg-green-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Shield className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Quality Guarantee</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Quality Guarantee
+              </h3>
               <p className="text-gray-600 text-sm">
                 100% fresh ingredients, baked daily with expertise
               </p>
@@ -332,7 +399,9 @@ function ProductDetailsPage() {
               <div className="bg-blue-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Truck className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Fast Delivery</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Fast Delivery
+              </h3>
               <p className="text-gray-600 text-sm">
                 Same-day delivery available for orders before 2 PM
               </p>
@@ -343,23 +412,30 @@ function ProductDetailsPage() {
         {/* Reviews Section */}
         <Card className="border border-gray-200 rounded-2xl">
           <CardContent className="p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">
+              Customer Reviews
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[1, 2].map((review) => (
                 <div key={review} className="bg-gray-50 rounded-2xl p-6">
                   <div className="flex items-center mb-3">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-amber-400 fill-current" />
+                        <Star
+                          key={i}
+                          className="h-4 w-4 text-amber-400 fill-current"
+                        />
                       ))}
                     </div>
                     <span className="ml-2 text-gray-700 font-medium">5.0</span>
                   </div>
                   <p className="text-gray-700 mb-3 italic">
-                    "Absolutely divine! The texture was perfect and the flavors were incredible. 
-                    Will definitely order again!"
+                    "Absolutely divine! The texture was perfect and the flavors
+                    were incredible. Will definitely order again!"
                   </p>
-                  <p className="text-gray-600 font-medium text-sm">- Happy Customer</p>
+                  <p className="text-gray-600 font-medium text-sm">
+                    - Happy Customer
+                  </p>
                 </div>
               ))}
             </div>
