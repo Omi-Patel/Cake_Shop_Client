@@ -18,6 +18,9 @@ import {
   Shield,
   Award,
   Truck,
+  Plus,
+  Minus,
+  Share2,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
@@ -53,73 +56,60 @@ function ProductDetailsPage() {
     setIsWishlisted(!isWishlisted);
   };
 
-  // Placeholder images if product has multiple images
-  const images =
-    product.images.length > 0 ? product.images : ["/placeholder.svg"];
+  const images = product.images?.length > 0 ? product.images : [null];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
-      {/* Enhanced Navigation */}
-      <div className=" ">
-        <div className="container mx-auto px-4 py-4">
-          <Button
-            variant="ghost"
-            className="hover:bg-orange-100 rounded-xl transition-colors duration-300"
-            onClick={() => navigate({ to: "/app/products" })}
-          >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Back to Products
-          </Button>
-        </div>
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <div className="container mx-auto px-6 py-6">
+        <Button
+          variant="ghost"
+          className="hover:bg-gray-100 rounded-xl"
+          onClick={() => navigate({ to: "/app/products" })}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Products
+        </Button>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-          {/* Enhanced Product Images */}
+      <div className="container mx-auto px-6 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          {/* Product Images */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-orange-100 to-pink-100">
-              {images[selectedImageIndex] &&
-              images[selectedImageIndex] !== "/placeholder.svg" ? (
+            <div className="relative rounded-2xl overflow-hidden bg-gray-50 aspect-square">
+              {images[selectedImageIndex] ? (
                 <img
                   src={images[selectedImageIndex]}
                   alt={product.name}
-                  className="w-full h-[500px] lg:h-[600px] object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-contain"
                 />
               ) : (
-                <div className="w-full h-[500px] lg:h-[600px] bg-gradient-to-br from-orange-200 via-pink-200 to-rose-200 flex items-center justify-center">
-                  <Cake className="w-32 h-32 text-orange-400" />
+                <div className="w-full h-full flex items-center justify-center">
+                  <Cake className="w-24 h-24 text-gray-300" />
                 </div>
               )}
 
-              {/* Enhanced Status Badge */}
-              <div className="absolute top-6 left-6">
-                <Badge
-                  className={`${
-                    product.isAvailable
-                      ? "bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg"
-                      : "bg-gradient-to-r from-red-500 to-rose-500 shadow-lg"
-                  } text-white font-medium px-4 py-2 rounded-full text-base`}
-                >
-                  {product.isAvailable ? "✨ Available Now" : "⏰ Coming Soon"}
-                </Badge>
-              </div>
-
-              {/* Wishlist Button */}
-              <div className="absolute top-6 right-6">
+              {/* Action Buttons */}
+              <div className="absolute top-4 right-4 flex gap-2">
                 <Button
                   variant="ghost"
-                  size="lg"
+                  size="sm"
                   onClick={toggleWishlist}
-                  className="bg-white/90 backdrop-blur-sm rounded-full p-3 hover:bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+                  className="bg-white/90 hover:bg-white rounded-full p-2 shadow-md"
                 >
                   <Heart
-                    className={`h-6 w-6 transition-colors duration-300 ${
-                      isWishlisted
-                        ? "text-red-500 fill-current"
-                        : "text-gray-600"
+                    className={`h-5 w-5 ${
+                      isWishlisted ? "text-red-500 fill-current" : "text-gray-600"
                     }`}
                   />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="bg-white/90 hover:bg-white rounded-full p-2 shadow-md"
+                >
+                  <Share2 className="h-5 w-5 text-gray-600" />
                 </Button>
               </div>
             </div>
@@ -131,21 +121,21 @@ function ProductDetailsPage() {
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-300 ${
+                    className={`flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
                       selectedImageIndex === index
-                        ? "border-orange-500 shadow-lg"
-                        : "border-gray-200 hover:border-orange-300"
+                        ? "border-amber-500"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    {image && image !== "/placeholder.svg" ? (
+                    {image ? (
                       <img
                         src={image}
                         alt={`${product.name} ${index + 1}`}
-                        className="w-20 h-20 object-cover"
+                        className="w-20 h-20 object-contain"
                       />
                     ) : (
-                      <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-pink-100 flex items-center justify-center">
-                        <Cake className="w-8 h-8 text-orange-400" />
+                      <div className="w-20 h-20 bg-gray-100 flex items-center justify-center">
+                        <Cake className="w-6 h-6 text-gray-400" />
                       </div>
                     )}
                   </button>
@@ -154,78 +144,76 @@ function ProductDetailsPage() {
             )}
           </div>
 
-          {/* Enhanced Product Details */}
-          <div className="space-y-8">
-            {/* Product Header */}
+          {/* Product Details */}
+          <div className="space-y-6">
+            {/* Header */}
             <div>
-              <Badge className="bg-gradient-to-r from-orange-100 to-pink-100 text-orange-700 mb-4 font-medium px-4 py-2 rounded-full text-base">
+              <Badge variant="secondary" className="mb-4 bg-amber-100 text-amber-700">
                 {product.category}
               </Badge>
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-800 mb-4 leading-tight">
+              
+              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
                 {product.name}
               </h1>
 
-              {/* Rating Section */}
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="flex items-center space-x-2">
+              {/* Rating */}
+              <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-1">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 text-yellow-400 fill-current"
-                      />
+                      <Star key={i} className="h-4 w-4 text-amber-400 fill-current" />
                     ))}
                   </div>
-                  <span className="text-gray-600 font-medium">4.8</span>
+                  <span className="text-gray-700 font-medium ml-1">4.8</span>
                 </div>
-                <div className="h-4 w-px bg-gray-300"></div>
-                <span className="text-gray-600">120+ reviews</span>
-                <div className="h-4 w-px bg-gray-300"></div>
-                <span className="text-green-600 font-medium">
-                  ✓ Verified Quality
-                </span>
+                <span className="text-gray-500 text-sm">120+ reviews</span>
+                <Badge variant="outline" className="text-green-600 border-green-200">
+                  Verified Quality
+                </Badge>
               </div>
 
-              {/* Price Section */}
-              <div className="bg-gradient-to-r from-orange-50 to-pink-50 rounded-2xl p-6 border border-orange-100">
+              {/* Price */}
+              <div className="bg-gray-50 rounded-2xl p-6 mb-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Special Price</p>
-                    <p className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-                      ₹{product.price}
-                    </p>
+                    <p className="text-sm text-gray-600 mb-1">Price</p>
+                    <p className="text-3xl font-bold text-gray-900">₹{product.price}</p>
                   </div>
-                  <div className="text-right">
-                    <Badge className="bg-green-100 text-green-700 font-medium px-3 py-1 rounded-full">
-                      Fresh Today
-                    </Badge>
-                  </div>
+                  <Badge 
+                    variant={product.isAvailable ? "default" : "secondary"}
+                    className={product.isAvailable 
+                      ? "bg-green-100 text-green-700" 
+                      : "bg-gray-100 text-gray-600"
+                    }
+                  >
+                    {product.isAvailable ? "Available Now" : "Coming Soon"}
+                  </Badge>
                 </div>
               </div>
             </div>
 
             {/* Description */}
-            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                About This Treat
+            <div className="bg-gray-50 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Description
               </h3>
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <p className="text-gray-700 leading-relaxed">
                 {product.description}
               </p>
             </div>
 
             {/* Ingredients */}
-            {product.ingredients && product.ingredients.length > 0 && (
-              <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="flex items-center text-gray-700 mb-4">
-                  <ChefHat className="h-6 w-6 mr-3 text-orange-500" />
-                  <h3 className="text-xl font-bold">Premium Ingredients</h3>
+            { product.ingredients && product.ingredients.length > 0 && (
+              <div className="bg-gray-50 rounded-2xl p-6">
+                <div className="flex items-center text-gray-800 mb-4">
+                  <ChefHat className="h-5 w-5 mr-2 text-amber-500" />
+                  <h3 className="text-lg font-semibold">Ingredients</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {product.ingredients.map((ingredient, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
-                      <span className="text-gray-600">{ingredient}</span>
+                    <div key={index} className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
+                      <span className="text-gray-700 text-sm">{ingredient}</span>
                     </div>
                   ))}
                 </div>
@@ -235,122 +223,116 @@ function ProductDetailsPage() {
             {/* Allergens */}
             {product.allergens && product.allergens.length > 0 && (
               <div className="bg-red-50 rounded-2xl p-6 border border-red-100">
-                <div className="flex items-center text-red-600 mb-4">
-                  <AlertTriangle className="h-6 w-6 mr-3" />
-                  <h3 className="text-xl font-bold">Allergen Information</h3>
+                <div className="flex items-center text-red-700 mb-3">
+                  <AlertTriangle className="h-5 w-5 mr-2" />
+                  <h3 className="text-lg font-semibold">Allergen Information</h3>
                 </div>
-                <p className="text-red-600 font-medium">
+                <p className="text-red-700 font-medium">
                   Contains: {product.allergens.join(", ")}
                 </p>
               </div>
             )}
 
             {/* Quantity Selector */}
-            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Quantity</h3>
-              <div className="flex items-center space-x-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="rounded-full w-10 h-10 border-orange-200 hover:border-orange-400"
-                >
-                  -
-                </Button>
-                <span className="text-xl font-semibold w-12 text-center">
-                  {quantity}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="rounded-full w-10 h-10 border-orange-200 hover:border-orange-400"
-                >
-                  +
-                </Button>
-                <div className="ml-4 text-sm text-gray-600">
-                  Total:{" "}
-                  <span className="font-bold text-orange-600">
-                    ₹{product.price * quantity}
+            <div className="bg-gray-50 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quantity</h3>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center border border-gray-200 rounded-xl">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="rounded-xl"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="text-lg font-semibold w-12 text-center">
+                    {quantity}
                   </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="rounded-xl"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600">Total</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    ₹{product.price * quantity}
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-4">
-              <div className="flex gap-4">
+            <div className="space-y-3">
+              <div className="flex gap-3">
                 <Button
                   variant="outline"
-                  size="lg"
+                  className="flex-1 border-gray-200 hover:bg-gray-50 rounded-xl"
                   onClick={toggleWishlist}
-                  className="flex-1 border-2 border-orange-200 hover:border-orange-400 rounded-xl py-4 font-medium transition-all duration-300 hover:bg-orange-50"
                 >
                   <Heart
-                    className={`h-5 w-5 mr-2 transition-colors duration-300 ${
-                      isWishlisted
-                        ? "text-red-500 fill-current"
-                        : "text-gray-600"
+                    className={`h-4 w-4 mr-2 ${
+                      isWishlisted ? "text-red-500 fill-current" : "text-gray-600"
                     }`}
                   />
                   {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                 </Button>
                 <Button
-                  size="lg"
                   disabled={!product.isAvailable}
-                  className="flex-1 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white disabled:opacity-50 rounded-xl py-4 font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl"
                 >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  <ShoppingCart className="h-4 w-4 mr-2" />
                   Add to Cart
                 </Button>
               </div>
 
               {!product.isAvailable && (
-                <div className="flex items-center justify-center text-red-500 bg-red-50 rounded-xl py-3">
-                  <Clock className="h-5 w-5 mr-2" />
-                  <span className="font-medium">
-                    Currently out of stock - Available soon!
-                  </span>
+                <div className="flex items-center justify-center text-red-600 bg-red-50 rounded-xl py-3">
+                  <Clock className="h-4 w-4 mr-2" />
+                  <span className="font-medium">Currently out of stock</span>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Enhanced Features Section */}
+        {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <Card className="bg-white/60 backdrop-blur-sm border-white/20 rounded-2xl overflow-hidden">
+          <Card className="border border-gray-200 rounded-2xl">
             <CardContent className="p-6 text-center">
-              <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+              <div className="bg-green-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Shield className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="font-bold text-gray-800 mb-2">
-                Quality Guarantee
-              </h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Quality Guarantee</h3>
               <p className="text-gray-600 text-sm">
-                100% fresh ingredients, baked daily with love
+                100% fresh ingredients, baked daily with expertise
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/60 backdrop-blur-sm border-white/20 rounded-2xl overflow-hidden">
+          <Card className="border border-gray-200 rounded-2xl">
             <CardContent className="p-6 text-center">
-              <div className="bg-gradient-to-br from-orange-100 to-amber-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Award className="h-8 w-8 text-orange-600" />
+              <div className="bg-amber-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Award className="h-8 w-8 text-amber-600" />
               </div>
-              <h3 className="font-bold text-gray-800 mb-2">Artisan Made</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Artisan Made</h3>
               <p className="text-gray-600 text-sm">
                 Handcrafted by expert bakers with years of experience
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/60 backdrop-blur-sm border-white/20 rounded-2xl overflow-hidden">
+          <Card className="border border-gray-200 rounded-2xl">
             <CardContent className="p-6 text-center">
-              <div className="bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+              <div className="bg-blue-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Truck className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="font-bold text-gray-800 mb-2">Fast Delivery</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Fast Delivery</h3>
               <p className="text-gray-600 text-sm">
                 Same-day delivery available for orders before 2 PM
               </p>
@@ -358,38 +340,26 @@ function ProductDetailsPage() {
           </Card>
         </div>
 
-        {/* Reviews Section Placeholder */}
-        <Card className="bg-white/60 backdrop-blur-sm border-white/20 rounded-2xl overflow-hidden">
+        {/* Reviews Section */}
+        <Card className="border border-gray-200 rounded-2xl">
           <CardContent className="p-8">
-            <h3 className="text-2xl font-bold text-gray-800 mb-6">
-              Customer Reviews
-            </h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[1, 2].map((review) => (
-                <div
-                  key={review}
-                  className="bg-white/50 rounded-xl p-6 border border-white/20"
-                >
+                <div key={review} className="bg-gray-50 rounded-2xl p-6">
                   <div className="flex items-center mb-3">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-4 w-4 text-yellow-400 fill-current"
-                        />
+                        <Star key={i} className="h-4 w-4 text-amber-400 fill-current" />
                       ))}
                     </div>
-                    <span className="ml-2 text-sm text-gray-600 font-medium">
-                      5.0
-                    </span>
+                    <span className="ml-2 text-gray-700 font-medium">5.0</span>
                   </div>
-                  <p className="text-gray-600 mb-3 italic">
-                    "Absolutely delicious! The texture was perfect and the
-                    flavors were incredible. Will definitely order again!"
+                  <p className="text-gray-700 mb-3 italic">
+                    "Absolutely divine! The texture was perfect and the flavors were incredible. 
+                    Will definitely order again!"
                   </p>
-                  <p className="text-sm text-gray-500 font-medium">
-                    - Happy Customer
-                  </p>
+                  <p className="text-gray-600 font-medium text-sm">- Happy Customer</p>
                 </div>
               ))}
             </div>
