@@ -34,6 +34,8 @@ import {
   ShoppingCart,
   Heart,
   PlusCircle,
+  AlignRight,
+  LogIn,
 } from "lucide-react";
 
 export default function Header() {
@@ -101,7 +103,7 @@ export default function Header() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-green-400 hover:bg-green-500"
                   >
                     <PlusCircle className="h-5 w-5 text-gray-600" />
                     Add Product
@@ -154,29 +156,27 @@ export default function Header() {
             ) : (
               <div className="flex items-center space-x-3">
                 <Button variant="ghost" asChild>
-                  <Link to="/auth/login">Sign In</Link>
+                  <Link to="/auth/login">
+                    <LogIn className="h-5 w-5" />
+                    Sign In
+                  </Link>
                 </Button>
-                <Button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white">
-                  Order Now
-                </Button>
+                <Link to="/app/products">
+                  <Button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white">
+                    <ShoppingCart className="h-5 w-5" />
+                    Order Now
+                  </Button>
+                </Link>
               </div>
             )}
           </div>
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center space-x-2">
-            {isLoggedIn && (
-              <Button variant="ghost" size="sm" className="relative">
-                <ShoppingCart className="h-5 w-5 text-gray-600" />
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  2
-                </span>
-              </Button>
-            )}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="sm" className="lg:hidden">
-                  <Menu className="h-6 w-6" />
+                  <AlignRight className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
@@ -195,9 +195,24 @@ export default function Header() {
                     <SheetDescription className="text-sm text-gray-500"></SheetDescription>
                   </SheetHeader>
 
+                  <div className="flex items-center justify-end m-4">
+                    {isLoggedIn && (
+                      <Link to="/app/products/create">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="flex items-center gap-2 bg-green-400"
+                        >
+                          <PlusCircle className="h-5 w-5 " />
+                          Add Product
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
+
                   {/* Mobile Navigation */}
                   <nav className="flex-1 px-4">
-                    <div className="space-y-3 my-6">
+                    <div className="space-y-3">
                       {navigationItems.map((item) => (
                         <Link
                           key={item.to}
@@ -279,6 +294,7 @@ export default function Header() {
                       <div className="space-y-3">
                         <Button asChild className="w-full" variant="outline">
                           <Link to="/auth/login" onClick={closeMobileMenu}>
+                            <LogIn className="h-5 w-5" />
                             Sign In
                           </Link>
                         </Button>
@@ -287,6 +303,7 @@ export default function Header() {
                           className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white"
                         >
                           <Link to="/app/products" onClick={closeMobileMenu}>
+                            <ShoppingCart className="h-5 w-5" />
                             Order Now
                           </Link>
                         </Button>

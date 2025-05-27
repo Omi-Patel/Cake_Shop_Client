@@ -368,8 +368,6 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                 </p>
               </div>
             </div>
-
-            
           </div>
         </div>
       </div>
@@ -383,37 +381,59 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
               <div className="p-6 border-b border-white/20">
                 <div className="flex items-center justify-between">
                   {steps.map((step, index) => (
-                    <div key={step.id} className="flex items-center">
-                      <button
-                        onClick={() => setActiveStep(step.id)}
-                        className={cn(
-                          "flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300",
-                          activeStep >= step.id
-                            ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
-                            : "bg-gray-200 text-gray-500 hover:bg-gray-300"
-                        )}
-                      >
-                        <step.icon className="h-5 w-5" />
-                      </button>
-                      <span
-                        className={cn(
-                          "ml-3 text-sm font-medium transition-colors",
-                          activeStep >= step.id
-                            ? "text-purple-600"
-                            : "text-gray-500"
-                        )}
-                      >
-                        {step.title}
-                      </span>
-                      {index < steps.length - 1 && (
-                        <div
+                    <div
+                      key={step.id}
+                      className="flex flex-col items-center space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4 md:space-x-6"
+                    >
+                      {/* Step Button and Title Container */}
+                      <div className="flex flex-col items-center space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3 min-w-0">
+                        {/* Step Button */}
+                        <button
+                          onClick={() => setActiveStep(step.id)}
                           className={cn(
-                            "w-16 h-0.5 mx-4 transition-colors",
-                            activeStep > step.id
-                              ? "bg-purple-500"
-                              : "bg-gray-200"
+                            "flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-10 md:h-10 rounded-full transition-all duration-300 flex-shrink-0",
+                            "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
+                            "hover:scale-105 active:scale-95",
+                            activeStep >= step.id
+                              ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl"
+                              : "bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-gray-600"
                           )}
-                        />
+                          aria-label={`Step ${step.id}: ${step.title}`}
+                        >
+                          <step.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                        </button>
+
+                        {/* Step Title */}
+                        <span
+                          className={cn(
+                            "text-xs sm:text-sm md:text-base font-medium transition-colors text-center sm:text-left",
+                            "max-w-[120px] sm:max-w-none truncate sm:truncate-none",
+                            activeStep >= step.id
+                              ? "text-purple-600"
+                              : "text-gray-500"
+                          )}
+                          title={step.title} // Tooltip for truncated text
+                        >
+                          {step.title}
+                        </span>
+                      </div>
+
+                      {/* Connector Line */}
+                      {index < steps.length - 1 && (
+                        <div className="flex items-center justify-center flex-shrink-0">
+                          <div
+                            className={cn(
+                              "transition-all duration-300",
+                              // Mobile: vertical line
+                              "w-0.5 h-4 xs:h-6",
+                              // Small screens and up: horizontal line
+                              "sm:w-8 sm:h-0.5 md:w-12 lg:w-16",
+                              activeStep > step.id
+                                ? "bg-gradient-to-r from-purple-500 to-blue-500 sm:bg-gradient-to-r"
+                                : "bg-gray-200"
+                            )}
+                          />
+                        </div>
                       )}
                     </div>
                   ))}

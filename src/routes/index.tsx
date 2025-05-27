@@ -525,15 +525,15 @@ function App() {
                 size="lg"
                 className="bg-white text-amber-600 hover:bg-gray-100 rounded-2xl h-16 px-10 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300"
               >
-                <Cake className="h-6 w-6 mr-3" />
+                <Cake className="h-6 w-6" />
                 Order Custom Cake
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-amber-600 rounded-2xl h-16 px-10 text-lg font-semibold"
+                className="border-2 border-white text-black hover:bg-white hover:text-amber-600 rounded-2xl h-16 px-10 text-lg font-semibold"
               >
-                <Phone className="h-6 w-6 mr-3" />
+                <Phone className="h-6 w-6" />
                 Call Us Now
               </Button>
             </div>

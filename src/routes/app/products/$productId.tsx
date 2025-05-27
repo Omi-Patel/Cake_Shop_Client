@@ -27,6 +27,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { getToken } from "@/lib/auth";
 
 interface ApiResponse {
   success: boolean;
@@ -84,34 +85,37 @@ function ProductDetailsPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Products
           </Button>
-          <div className="flex sm:flex-row flex-col gap-2 items-center">
-            <Button
-              variant="outline"
-              className="hover:bg-gray-100 rounded-xl"
-              onClick={() => {
-                if (!product._id) return;
-                navigate({
-                  to: "/app/products/edit/$productId",
-                  params: { productId: product._id },
-                });
-              }}
-            >
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit Product
-            </Button>
 
-            <Button
-              variant="destructive"
-              className="hover:bg-red-800 rounded-xl "
-              onClick={() => {
-                if (!product._id) return;
-                handleDeleteProduct(product._id);
-              }}
-            >
-              <Trash className="h-4 w-4 mr-2" />
-              Delete Product
-            </Button>
-          </div>
+          {getToken() && (
+            <div className="flex sm:flex-row flex-col gap-2 items-center">
+              <Button
+                variant="outline"
+                className="hover:bg-gray-100 rounded-xl"
+                onClick={() => {
+                  if (!product._id) return;
+                  navigate({
+                    to: "/app/products/edit/$productId",
+                    params: { productId: product._id },
+                  });
+                }}
+              >
+                <Pencil className="h-4 w-4 mr-2" />
+                Edit Product
+              </Button>
+
+              <Button
+                variant="destructive"
+                className="hover:bg-red-800 rounded-xl "
+                onClick={() => {
+                  if (!product._id) return;
+                  handleDeleteProduct(product._id);
+                }}
+              >
+                <Trash className="h-4 w-4 mr-2" />
+                Delete Product
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
