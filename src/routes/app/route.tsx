@@ -8,9 +8,9 @@ export const Route = createFileRoute("/app")({
 
 function RouteComponent() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
+    <div className="min-h-screen">
       <Header />
-      <main className="pt-20">
+      <main>
         <Outlet />
       </main>
       <Footer />

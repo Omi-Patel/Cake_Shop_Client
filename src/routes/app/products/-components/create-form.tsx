@@ -333,12 +333,12 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
   ];
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+      <div className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-6">
               <Button
                 variant="ghost"
                 size="sm"
@@ -350,20 +350,35 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                         : `/app/products/${product!._id}`,
                   })
                 }
-                className="hover:bg-white/50"
+                className="hover:bg-slate-100 text-slate-600 transition-colors duration-200 w-fit"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
+                Back to Products
               </Button>
+              <div className="hidden sm:block h-8 w-px bg-slate-200" />
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  {mode === "create" ? "Create Product" : "Edit Product"}
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
+                  {mode === "create" ? "Create New Product" : "Edit Product"}
                 </h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm sm:text-base text-slate-600">
                   {mode === "create"
-                    ? "Add a new product to your catalog"
-                    : "Update product information"}
+                    ? "Add a delicious new product to your catalog"
+                    : "Update your product information and details"}
                 </p>
+              </div>
+            </div>
+            <div className="flex sm:hidden items-center space-x-2">
+              <div className="px-3 py-1 bg-slate-100 rounded-full">
+                <span className="text-sm font-medium text-slate-700">
+                  {mode === "create" ? "New Product" : "Editing"}
+                </span>
+              </div>
+            </div>
+            <div className="hidden sm:flex items-center space-x-2">
+              <div className="px-3 py-1 bg-slate-100 rounded-full">
+                <span className="text-sm font-medium text-slate-700">
+                  {mode === "create" ? "New Product" : "Editing"}
+                </span>
               </div>
             </div>
           </div>
@@ -374,9 +389,9 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Form Section */}
           <div className="lg:col-span-8">
-            <div className="backdrop-blur-xl bg-white/70 rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
               {/* Progress Steps */}
-              <div className="p-6 border-b border-white/20">
+              <div className="p-6 border-b border-slate-200 bg-slate-50">
                 <div className="flex items-center justify-between">
                   {steps.map((step, index) => (
                     <div
@@ -390,11 +405,11 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                           onClick={() => setActiveStep(step.id)}
                           className={cn(
                             "flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-10 md:h-10 rounded-full transition-all duration-300 flex-shrink-0",
-                            "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
+                            "focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2",
                             "hover:scale-105 active:scale-95",
                             activeStep >= step.id
-                              ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl"
-                              : "bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-gray-600"
+                              ? "bg-slate-900 text-white shadow-lg hover:shadow-xl"
+                              : "bg-slate-200 text-slate-500 hover:bg-slate-300 hover:text-slate-600"
                           )}
                           aria-label={`Step ${step.id}: ${step.title}`}
                         >
@@ -407,8 +422,8 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                             "text-xs sm:text-sm md:text-base font-medium transition-colors text-center sm:text-left",
                             "max-w-[120px] sm:max-w-none truncate sm:truncate-none",
                             activeStep >= step.id
-                              ? "text-purple-600"
-                              : "text-gray-500"
+                              ? "text-slate-900"
+                              : "text-slate-500"
                           )}
                           title={step.title} // Tooltip for truncated text
                         >
@@ -427,8 +442,8 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                               // Small screens and up: horizontal line
                               "sm:w-8 sm:h-0.5 md:w-12 lg:w-16",
                               activeStep > step.id
-                                ? "bg-gradient-to-r from-purple-500 to-blue-500 sm:bg-gradient-to-r"
-                                : "bg-gray-200"
+                                ? "bg-slate-900 sm:bg-slate-900"
+                                : "bg-slate-200"
                             )}
                           />
                         </div>
@@ -446,7 +461,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                       <div className="space-y-2">
                         <Label
                           htmlFor="name"
-                          className="text-sm font-semibold text-gray-700"
+                          className="text-sm font-semibold text-slate-700"
                         >
                           Product Name *
                         </Label>
@@ -470,10 +485,10 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                               "pl-10 h-12 rounded-xl border-2 transition-all duration-200",
                               errors.name
                                 ? "border-red-300 focus:border-red-500"
-                                : "border-gray-200 focus:border-purple-500"
+                                : "border-slate-200 focus:border-slate-500"
                             )}
                           />
-                          <Package className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          <Package className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                         </div>
                         {errors.name && (
                           <div className="flex items-center text-sm text-red-600 animate-in slide-in-from-top-1">
@@ -486,7 +501,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                       <div className="space-y-2">
                         <Label
                           htmlFor="price"
-                          className="text-sm font-semibold text-gray-700"
+                          className="text-sm font-semibold text-slate-700"
                         >
                           Price (₹) *
                         </Label>
@@ -512,10 +527,10 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                               "pl-10 h-12 rounded-xl border-2 transition-all duration-200",
                               errors.price
                                 ? "border-red-300 focus:border-red-500"
-                                : "border-gray-200 focus:border-purple-500"
+                                : "border-slate-200 focus:border-slate-500"
                             )}
                           />
-                          <DollarSign className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                          <DollarSign className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
                         </div>
                         {errors.price && (
                           <div className="flex items-center text-sm text-red-600 animate-in slide-in-from-top-1">
@@ -529,7 +544,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                     <div className="space-y-2">
                       <Label
                         htmlFor="category"
-                        className="text-sm font-semibold text-gray-700"
+                        className="text-sm font-semibold text-slate-700"
                       >
                         Category *
                       </Label>
@@ -549,7 +564,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                             "h-12 rounded-xl border-2 transition-all duration-200",
                             errors.category
                               ? "border-red-300"
-                              : "border-gray-200 focus:border-purple-500"
+                              : "border-slate-200 focus:border-slate-500"
                           )}
                         >
                           <SelectValue placeholder="Select a category" />
@@ -578,7 +593,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                     <div className="space-y-2">
                       <Label
                         htmlFor="description"
-                        className="text-sm font-semibold text-gray-700"
+                        className="text-sm font-semibold text-slate-700"
                       >
                         Description *
                       </Label>
@@ -605,7 +620,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                           "rounded-xl border-2 transition-all duration-200 resize-none",
                           errors.description
                             ? "border-red-300 focus:border-red-500"
-                            : "border-gray-200 focus:border-purple-500"
+                            : "border-slate-200 focus:border-slate-500"
                         )}
                       />
                       <div className="flex justify-between items-center">
@@ -617,25 +632,25 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                         ) : (
                           <div />
                         )}
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-slate-500">
                           {formData.description.length}/1000
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
                       <div className="flex items-center space-x-3">
                         <div
                           className={cn(
                             "w-3 h-3 rounded-full transition-colors",
                             formData.isAvailable
                               ? "bg-green-500"
-                              : "bg-gray-400"
+                              : "bg-slate-400"
                           )}
                         />
                         <Label
                           htmlFor="isAvailable"
-                          className="text-sm font-medium text-gray-700"
+                          className="text-sm font-medium text-slate-700"
                         >
                           Product is available for sale
                         </Label>
@@ -655,7 +670,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                     <Button
                       type="button"
                       onClick={() => setActiveStep(1)}
-                      className="w-full h-12 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 rounded-xl"
+                      className="w-full h-12 bg-slate-900 hover:bg-slate-800 rounded-xl"
                     >
                       Next: Add Images
                       <ArrowLeft className="h-4 w-4 ml-2 rotate-180" />
@@ -667,10 +682,10 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                 {activeStep === 1 && (
                   <div className="space-y-6 animate-in slide-in-from-right-5 duration-300">
                     <div className="text-center">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                      <h3 className="text-lg font-semibold text-slate-800 mb-2">
                         Product Images
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-slate-600">
                         {mode === "create"
                           ? "Add at least one image"
                           : "Update or add more images"}
@@ -683,8 +698,8 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                       className={cn(
                         "relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer",
                         isDragOver
-                          ? "border-purple-400 bg-purple-50 scale-105"
-                          : "border-gray-300 hover:border-purple-400 hover:bg-purple-50/50",
+                          ? "border-slate-400 bg-slate-50 scale-105"
+                          : "border-slate-300 hover:border-slate-400 hover:bg-slate-50/50",
                         errors.images ? "border-red-300" : ""
                       )}
                       onClick={() => fileInputRef.current?.click()}
@@ -701,16 +716,16 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                       />
 
                       <div className="space-y-4">
-                        <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center">
-                          <ImageIcon className="h-8 w-8 text-purple-600" />
+                        <div className="mx-auto w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
+                          <ImageIcon className="h-8 w-8 text-slate-600" />
                         </div>
                         <div>
-                          <p className="text-lg font-medium text-gray-700">
+                          <p className="text-lg font-medium text-slate-700">
                             {isDragOver
                               ? "Drop images here"
                               : "Upload Product Images"}
                           </p>
-                          <p className="text-sm text-gray-500 mt-1">
+                          <p className="text-sm text-slate-500 mt-1">
                             Drag & drop or click to browse • PNG, JPG, WebP •
                             Max 5MB each
                           </p>
@@ -736,14 +751,14 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                     {/* Image Previews */}
                     {images.length > 0 && (
                       <div className="space-y-4">
-                        <h4 className="font-medium text-gray-700">
+                        <h4 className="font-medium text-slate-700">
                           Uploaded Images ({images.length}/{MAX_IMAGES})
                         </h4>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                           {images.map((image) => (
                             <div
                               key={image.id}
-                              className="relative group aspect-square rounded-xl overflow-hidden border-2 border-gray-200 hover:border-purple-300 transition-all duration-200"
+                              className="relative group aspect-square rounded-xl overflow-hidden border-2 border-slate-200 hover:border-slate-300 transition-all duration-200"
                             >
                               <img
                                 src={
@@ -771,7 +786,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                                 <X className="h-3 w-3" />
                               </button>
                               {image.isExisting && (
-                                <Badge className="absolute bottom-2 left-2 text-xs bg-blue-500">
+                                <Badge className="absolute bottom-2 left-2 text-xs bg-slate-600">
                                   Existing
                                 </Badge>
                               )}
@@ -794,7 +809,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                       <Button
                         type="button"
                         onClick={() => setActiveStep(2)}
-                        className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 rounded-xl"
+                        className="flex-1 h-12 bg-slate-900 hover:bg-slate-800 rounded-xl"
                       >
                         Next: Add Details
                         <ArrowLeft className="h-4 w-4 ml-2 rotate-180" />
@@ -808,7 +823,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                   <div className="space-y-6 animate-in slide-in-from-right-5 duration-300">
                     {/* Ingredients */}
                     <div className="space-y-4">
-                      <Label className="text-sm font-semibold text-gray-700 flex items-center">
+                      <Label className="text-sm font-semibold text-slate-700 flex items-center">
                         <Utensils className="h-4 w-4 mr-2" />
                         Ingredients
                       </Label>
@@ -817,7 +832,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                           value={newIngredient}
                           onChange={(e) => setNewIngredient(e.target.value)}
                           placeholder="Add an ingredient"
-                          className="flex-1 h-10 rounded-xl border-2 border-gray-200 focus:border-purple-500"
+                          className="flex-1 h-10 rounded-xl border-2 border-slate-200 focus:border-slate-500"
                           onKeyPress={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -829,7 +844,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                           type="button"
                           onClick={() => addTag("ingredients", newIngredient)}
                           disabled={!newIngredient.trim()}
-                          className="h-10 px-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+                          className="h-10 px-4 rounded-xl bg-slate-900 hover:bg-slate-800"
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
@@ -841,7 +856,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                             <Badge
                               key={index}
                               variant="secondary"
-                              className="flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 hover:bg-green-200 transition-colors"
+                              className="flex items-center gap-1 px-3 py-1 bg-slate-100 text-slate-800 hover:bg-slate-200 transition-colors"
                             >
                               {ingredient}
                               <button
@@ -859,7 +874,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
 
                     {/* Allergens */}
                     <div className="space-y-4">
-                      <Label className="text-sm font-semibold text-gray-700 flex items-center">
+                      <Label className="text-sm font-semibold text-slate-700 flex items-center">
                         <AlertTriangle className="h-4 w-4 mr-2" />
                         Allergens
                       </Label>
@@ -868,7 +883,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                           value={newAllergen}
                           onChange={(e) => setNewAllergen(e.target.value)}
                           placeholder="Add an allergen"
-                          className="flex-1 h-10 rounded-xl border-2 border-gray-200 focus:border-purple-500"
+                          className="flex-1 h-10 rounded-xl border-2 border-slate-200 focus:border-slate-500"
                           onKeyPress={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -880,7 +895,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                           type="button"
                           onClick={() => addTag("allergens", newAllergen)}
                           disabled={!newAllergen.trim()}
-                          className="h-10 px-4 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"
+                          className="h-10 px-4 rounded-xl bg-red-600 hover:bg-red-700"
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
@@ -921,7 +936,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                       <Button
                         type="submit"
                         disabled={isLoading}
-                        className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 rounded-xl"
+                        className="flex-1 h-12 bg-slate-900 hover:bg-slate-800 rounded-xl"
                       >
                         {isLoading ? (
                           <>
@@ -947,10 +962,10 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
           {/* Preview Section */}
           <div className="lg:col-span-4">
             <div className="sticky top-24">
-              <div className="backdrop-blur-xl bg-white/70 rounded-3xl shadow-2xl border border-white/20 p-6">
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <Sparkles className="h-5 w-5 mr-2 text-purple-600" />
+                  <h3 className="text-lg font-semibold text-slate-800 flex items-center">
+                    <Sparkles className="h-5 w-5 mr-2 text-slate-600" />
                     Live Preview
                   </h3>
                   <Badge variant="outline" className="text-xs">
@@ -960,7 +975,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
 
                 <div className="space-y-4">
                   {/* Preview Image */}
-                  <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                  <div className="aspect-square rounded-2xl overflow-hidden bg-slate-100">
                     {images.length > 0 ? (
                       <img
                         src={
@@ -978,8 +993,8 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <div className="text-center">
-                          <ImageIcon className="h-12 w-12 mx-auto text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-500">
+                          <ImageIcon className="h-12 w-12 mx-auto text-slate-400 mb-2" />
+                          <p className="text-sm text-slate-500">
                             No image uploaded
                           </p>
                         </div>
@@ -990,7 +1005,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                   {/* Preview Content */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-semibold text-gray-800 truncate">
+                      <h4 className="font-semibold text-slate-800 truncate">
                         {formData.name || "Product Name"}
                       </h4>
                       <Badge variant="outline" className="text-xs">
@@ -998,18 +1013,18 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                       </Badge>
                     </div>
 
-                    <p className="text-2xl font-bold text-purple-600">
+                    <p className="text-2xl font-bold text-slate-900">
                       ₹{formData.price || "0.00"}
                     </p>
 
-                    <p className="text-sm text-gray-600 line-clamp-3">
+                    <p className="text-sm text-slate-600 line-clamp-3">
                       {formData.description ||
                         "Product description will appear here..."}
                     </p>
 
                     {formData.ingredients.length > 0 && (
                       <div>
-                        <p className="text-xs font-medium text-gray-700 mb-1">
+                        <p className="text-xs font-medium text-slate-700 mb-1">
                           Ingredients:
                         </p>
                         <div className="flex flex-wrap gap-1">
@@ -1035,7 +1050,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
 
                     {formData.allergens.length > 0 && (
                       <div>
-                        <p className="text-xs font-medium text-gray-700 mb-1">
+                        <p className="text-xs font-medium text-slate-700 mb-1">
                           Allergens:
                         </p>
                         <div className="flex flex-wrap gap-1">
@@ -1059,8 +1074,8 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                      <span className="text-xs text-gray-500">
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                      <span className="text-xs text-slate-500">
                         Availability
                       </span>
                       <div className="flex items-center space-x-1">
@@ -1069,7 +1084,7 @@ export function ProductForm({ product, mode = "create" }: ProductFormProps) {
                             "w-2 h-2 rounded-full",
                             formData.isAvailable
                               ? "bg-green-500"
-                              : "bg-gray-400"
+                              : "bg-slate-400"
                           )}
                         />
                         <span className="text-xs font-medium">
