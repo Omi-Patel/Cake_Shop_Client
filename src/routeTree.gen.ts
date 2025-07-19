@@ -13,7 +13,6 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AppRouteImport } from './routes/app/route'
 import { Route as IndexImport } from './routes/index'
-import { Route as AuthRegisterIndexImport } from './routes/auth/register/index'
 import { Route as AuthLoginIndexImport } from './routes/auth/login/index'
 import { Route as AppProductsIndexImport } from './routes/app/products/index'
 import { Route as AppContactUsIndexImport } from './routes/app/contact-us/index'
@@ -33,12 +32,6 @@ const AppRouteRoute = AppRouteImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AuthRegisterIndexRoute = AuthRegisterIndexImport.update({
-  id: '/auth/register/',
-  path: '/auth/register/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -144,13 +137,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginIndexImport
       parentRoute: typeof rootRoute
     }
-    '/auth/register/': {
-      id: '/auth/register/'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/app/products/edit/$productId': {
       id: '/app/products/edit/$productId'
       path: '/products/edit/$productId'
@@ -194,7 +180,6 @@ export interface FileRoutesByFullPath {
   '/app/contact-us': typeof AppContactUsIndexRoute
   '/app/products': typeof AppProductsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
-  '/auth/register': typeof AuthRegisterIndexRoute
   '/app/products/edit/$productId': typeof AppProductsEditProductIdRoute
 }
 
@@ -207,7 +192,6 @@ export interface FileRoutesByTo {
   '/app/contact-us': typeof AppContactUsIndexRoute
   '/app/products': typeof AppProductsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
-  '/auth/register': typeof AuthRegisterIndexRoute
   '/app/products/edit/$productId': typeof AppProductsEditProductIdRoute
 }
 
@@ -221,7 +205,6 @@ export interface FileRoutesById {
   '/app/contact-us/': typeof AppContactUsIndexRoute
   '/app/products/': typeof AppProductsIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
-  '/auth/register/': typeof AuthRegisterIndexRoute
   '/app/products/edit/$productId': typeof AppProductsEditProductIdRoute
 }
 
@@ -236,7 +219,6 @@ export interface FileRouteTypes {
     | '/app/contact-us'
     | '/app/products'
     | '/auth/login'
-    | '/auth/register'
     | '/app/products/edit/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -248,7 +230,6 @@ export interface FileRouteTypes {
     | '/app/contact-us'
     | '/app/products'
     | '/auth/login'
-    | '/auth/register'
     | '/app/products/edit/$productId'
   id:
     | '__root__'
@@ -260,7 +241,6 @@ export interface FileRouteTypes {
     | '/app/contact-us/'
     | '/app/products/'
     | '/auth/login/'
-    | '/auth/register/'
     | '/app/products/edit/$productId'
   fileRoutesById: FileRoutesById
 }
@@ -269,14 +249,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
   AuthLoginIndexRoute: typeof AuthLoginIndexRoute
-  AuthRegisterIndexRoute: typeof AuthRegisterIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
   AuthLoginIndexRoute: AuthLoginIndexRoute,
-  AuthRegisterIndexRoute: AuthRegisterIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -291,8 +269,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/app",
-        "/auth/login/",
-        "/auth/register/"
+        "/auth/login/"
       ]
     },
     "/": {
@@ -331,9 +308,6 @@ export const routeTree = rootRoute
     },
     "/auth/login/": {
       "filePath": "auth/login/index.tsx"
-    },
-    "/auth/register/": {
-      "filePath": "auth/register/index.tsx"
     },
     "/app/products/edit/$productId": {
       "filePath": "app/products/edit/$productId.tsx",

@@ -12,7 +12,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -22,13 +21,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { loginUser } from "@/lib/actions";
 import type { LoginInput, UserResponse } from "@/schema/user-schema";
 import { toast } from "sonner";
-import { getUser } from "@/lib/auth";
+import { isAuthenticated } from "@/lib/auth";
 
 export const Route = createFileRoute("/auth/login/")({
   component: RouteComponent,
   loader: async () => {
-    const user = getUser();
-    if (user) {
+    if (isAuthenticated()) {
       return redirect({ to: "/" });
     }
 
@@ -217,7 +215,7 @@ function RouteComponent() {
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col items-center justify-center border-t p-6">
+          {/* <CardFooter className="flex flex-col items-center justify-center border-t p-6">
             <p className="text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
               <Button
@@ -228,7 +226,7 @@ function RouteComponent() {
                 Create an account
               </Button>
             </p>
-          </CardFooter>
+          </CardFooter> */}
         </Card>
       </div>
     </div>

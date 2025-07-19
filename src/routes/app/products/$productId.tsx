@@ -23,7 +23,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { getToken } from "@/lib/auth";
+import { isAuthenticated } from "@/lib/auth";
 
 interface ApiResponse {
   success: boolean;
@@ -81,7 +81,7 @@ function ProductDetailsPage() {
             Back to Products
           </Button>
 
-          {getToken() && (
+          {isAuthenticated() && (
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center w-full sm:w-auto">
               <Button
                 variant="outline"
