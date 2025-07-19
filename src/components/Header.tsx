@@ -75,7 +75,7 @@ export default function Header() {
               <Cake className="h-5 w-5 text-white" />
             </div>
             <span className="text-xl font-medium text-slate-900">
-              Sweet Dreams
+              Cake Enjoy.
             </span>
           </Link>
 
@@ -188,7 +188,7 @@ export default function Header() {
                         <Cake className="h-5 w-5 text-white" />
                       </div>
                       <SheetTitle className="font-medium text-slate-900">
-                        Sweet Dreams
+                        Cake Enjoy.
                       </SheetTitle>
                     </div>
                     <SheetDescription className="text-sm text-slate-500"></SheetDescription>
@@ -271,13 +271,20 @@ export default function Header() {
                       </Button>
                     ) : (
                       <div className="space-y-3">
-                        <Button variant="ghost" asChild className="w-full justify-start">
+                        <Button
+                          variant="ghost"
+                          asChild
+                          className="w-full justify-start"
+                        >
                           <Link to="/auth/login" onClick={closeMobileMenu}>
                             <LogIn className="h-5 w-5 mr-3" />
                             Sign In
                           </Link>
                         </Button>
-                        <Button asChild className="w-full bg-slate-900 hover:bg-slate-800 text-white">
+                        <Button
+                          asChild
+                          className="w-full bg-slate-900 hover:bg-slate-800 text-white"
+                        >
                           <Link to="/app/products" onClick={closeMobileMenu}>
                             <ShoppingCart className="h-5 w-5 mr-3" />
                             Order Now

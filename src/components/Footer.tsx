@@ -52,7 +52,7 @@ const Footer = () => {
                 <Cake className="h-6 w-6 text-white" />
               </div>
               <div>
-                <span className="text-2xl font-medium">Sweet Dreams</span>
+                <span className="text-2xl font-medium">Cake Enjoy.</span>
                 <div className="text-sm text-slate-400 font-medium">
                   Artisan Bakery
                 </div>
