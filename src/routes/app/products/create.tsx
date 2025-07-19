@@ -13,5 +13,9 @@ export const Route = createFileRoute("/app/products/create")({
 });
 
 function CreateProductPage() {
-  return <ProductForm mode="create" />;
+  return (
+    <div className="pt-20">
+      <ProductForm mode="create" />
+    </div>
+  );
 }

@@ -37,7 +37,7 @@ function EditProductPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="pt-20">
       <ProductForm product={product} mode="edit" />
     </div>
   );

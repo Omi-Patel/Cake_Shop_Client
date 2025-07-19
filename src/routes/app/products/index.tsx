@@ -1,10 +1,10 @@
 "use client";
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/lib/actions";
 import type { Product } from "@/schema/product-schema";
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,17 +15,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Heart,
   Star,
   Search,
   Filter,
   AlertTriangle,
-  Clock,
-  ChefHat,
-  Cake,
   Eye,
-  Sparkles,
   SlidersHorizontal,
+  Loader2,
+  RefreshCw,
+  ArrowUpRight,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 
@@ -37,25 +35,86 @@ interface ApiResponse {
 
 export const Route = createFileRoute("/app/products/")({
   component: RouteComponent,
-  loader: async () => {
-    try {
-      const response = (await getProducts()) as ApiResponse;
-      if (!response.success) {
-        throw new Error("Failed to load products");
-      }
-      return { products: response.data };
-    } catch (error) {
-      throw new Error("Failed to load products");
-    }
-  },
 });
 
+// Loading Component
+function LoadingComponent() {
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-6 py-8">
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-slate-100">
+              <Loader2 className="h-12 w-12 text-slate-600 animate-spin mx-auto mb-4" />
+              <h3 className="text-xl font-medium text-slate-900 mb-2">
+                Loading Products
+              </h3>
+              <p className="text-slate-600 font-light">
+                Preparing our delicious collection...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Error Component
+function ErrorComponent({ onRetry }: { error: any; onRetry: () => void }) {
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-6 py-8">
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-slate-100 max-w-md">
+              <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-xl font-medium text-slate-900 mb-2">
+                Something went wrong
+              </h3>
+              <p className="text-slate-600 mb-6 font-light">
+                We couldn't load our products right now.
+              </p>
+              <Button
+                onClick={onRetry}
+                className="bg-slate-900 hover:bg-slate-800 text-white"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Try Again
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function RouteComponent() {
-  const { products } = Route.useLoaderData();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("name");
   const [wishlist, setWishlist] = useState<string[]>([]);
+
+  // Fetch products using useQuery
+  const {
+    data: productsResponse,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const response = (await getProducts()) as ApiResponse;
+      if (!response.success) {
+        throw new Error("Failed to load products");
+      }
+      return response;
+    },
+  });
+
+  const products = productsResponse?.data || [];
 
   // Get unique categories
   const categories = useMemo(() => {
@@ -93,7 +152,8 @@ function RouteComponent() {
     return filtered;
   }, [products, searchTerm, selectedCategory, sortBy]);
 
-  const toggleWishlist = (productId: string) => {
+  const toggleWishlist = (productId: string | null | undefined) => {
+    if (!productId) return;
     setWishlist((prev) =>
       prev.includes(productId)
         ? prev.filter((id) => id !== productId)
@@ -101,167 +161,110 @@ function RouteComponent() {
     );
   };
 
+  // Loading state
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
+  // Error state
+  if (isError) {
+    return <ErrorComponent error={error} onRetry={() => refetch()} />;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
-      {/* Enhanced Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 py-32">
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-20 w-40 h-40 bg-white/10 rounded-full blur-xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-white/10 rounded-full blur-xl animate-pulse delay-500"></div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center text-white max-w-4xl mx-auto">
-            <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 mb-8">
-              <Sparkles className="h-5 w-5 mr-2" />
-              <span className="font-semibold">Artisan Cake Collection</span>
+    <div className="min-h-screen bg-slate-50 pt-20">
+      {/* Hero Header */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            {/* Title and Results */}
+            <div className="flex items-center justify-between lg:justify-start gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900 mb-2">
+                  Our Delicious Collection
+                </h1>
+                <p className="text-slate-600 font-light">
+                  Discover {filteredProducts.length} of {products.length}{" "}
+                  handcrafted delights
+                </p>
+              </div>
             </div>
-            <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight">
-              Sweet <span className="text-amber-200">Masterpieces</span>
-            </h1>
-            <p className="text-xl lg:text-2xl text-orange-100 max-w-3xl mx-auto leading-relaxed mb-8">
-              Discover our exquisite collection of handcrafted cakes, each one a
-              work of art made with premium ingredients and boundless
-              creativity.
-            </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-orange-100">
-              <div className="flex items-center bg-white/10 rounded-full px-4 py-2">
-                <div className="w-2 h-2 bg-orange-200 rounded-full mr-2"></div>
-                Fresh Daily
+
+            {/* Search and Filters */}
+            <div className="flex flex-col sm:flex-row gap-4 flex-1 lg:max-w-2xl">
+              {/* Search */}
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+                <Input
+                  placeholder="Search for your favorite cakes..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-12 pr-4 py-3 border border-slate-200 focus:border-slate-400 rounded-xl bg-white shadow-sm"
+                />
               </div>
-              <div className="flex items-center bg-white/10 rounded-full px-4 py-2">
-                <div className="w-2 h-2 bg-orange-200 rounded-full mr-2"></div>
-                Premium Ingredients
-              </div>
-              <div className="flex items-center bg-white/10 rounded-full px-4 py-2">
-                <div className="w-2 h-2 bg-orange-200 rounded-full mr-2"></div>
-                Artisan Made
-              </div>
+
+              {/* Category Filter */}
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
+                <SelectTrigger className="w-full sm:w-44 border border-slate-200 focus:border-slate-400 rounded-xl py-3 bg-white shadow-sm">
+                  <Filter className="h-4 w-4 mr-2 text-slate-400" />
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Sort */}
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-full sm:w-44 border border-slate-200 focus:border-slate-400 rounded-xl py-3 bg-white shadow-sm">
+                  <SlidersHorizontal className="h-4 w-4 mr-2 text-slate-400" />
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name">Name A-Z</SelectItem>
+                  <SelectItem value="price-low">Price: Low to High</SelectItem>
+                  <SelectItem value="price-high">Price: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <div className="container mx-auto px-4 py-16">
-        {/* Enhanced Filters and Search */}
-        <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-white/50 p-8 mb-16">
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 flex-1 w-full">
-              {/* Enhanced Search */}
-              <div className="relative flex-1 max-w-md">
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-2xl blur opacity-50"></div>
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-amber-500 h-5 w-5" />
-                  <Input
-                    placeholder="Search our delicious cakes..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-12 pr-4 py-4 border-2 border-amber-200 focus:border-amber-400 rounded-2xl bg-white/90 backdrop-blur-sm text-gray-800 placeholder:text-gray-500 transition-all duration-300 text-lg"
-                  />
-                </div>
-              </div>
-
-              {/* Enhanced Category Filter */}
-              <div className="relative">
-                <Select
-                  value={selectedCategory}
-                  onValueChange={setSelectedCategory}
-                >
-                  <SelectTrigger className="w-full sm:w-64 border-2 border-amber-200 focus:border-amber-400 rounded-2xl bg-white/90 backdrop-blur-sm py-4 px-4 text-gray-800 transition-all duration-300">
-                    <Filter className="h-5 w-5 mr-2 text-amber-500" />
-                    <SelectValue placeholder="All Categories" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-2xl border-amber-200 bg-white/95 backdrop-blur-sm">
-                    <SelectItem value="all" className="rounded-xl">
-                      All Categories
-                    </SelectItem>
-                    {categories.map((category) => (
-                      <SelectItem
-                        key={category}
-                        value={category}
-                        className="rounded-xl"
-                      >
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Enhanced Sort */}
-              <div className="relative">
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-full sm:w-64 border-2 border-amber-200 focus:border-amber-400 rounded-2xl bg-white/90 backdrop-blur-sm py-4 px-4 text-gray-800 transition-all duration-300">
-                    <SlidersHorizontal className="h-5 w-5 mr-2 text-amber-500" />
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-2xl border-amber-200 bg-white/95 backdrop-blur-sm">
-                    <SelectItem value="name" className="rounded-xl">
-                      Name A-Z
-                    </SelectItem>
-                    <SelectItem value="price-low" className="rounded-xl">
-                      Price: Low to High
-                    </SelectItem>
-                    <SelectItem value="price-high" className="rounded-xl">
-                      Price: High to Low
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
-          {/* Enhanced Results Count */}
-          <div className="mt-8 flex items-center justify-between">
-            <div className="text-gray-700 font-semibold text-lg">
-              Showing{" "}
-              <span className="text-amber-600 font-bold">
-                {filteredProducts.length}
-              </span>{" "}
-              of{" "}
-              <span className="text-amber-600 font-bold">
-                {products.length}
-              </span>{" "}
-              delicious treats
-            </div>
-            <div className="flex items-center text-sm text-gray-600 bg-green-50 rounded-full px-4 py-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-              Fresh inventory updated daily
-            </div>
-          </div>
-        </div>
-
-        {/* Enhanced Products Grid */}
+      {/* Products Grid */}
+      <div className="container mx-auto px-6 py-12">
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-32">
-            <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-white/50 p-20 max-w-lg mx-auto">
-              <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl p-8 w-32 h-32 mx-auto mb-8 flex items-center justify-center">
-                <Search className="h-16 w-16 text-amber-500" />
+          <div className="text-center py-20">
+            <div className="bg-white rounded-3xl p-16 shadow-lg border border-slate-100 max-w-lg mx-auto">
+              <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="h-10 w-10 text-slate-400" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-800 mb-6">
-                No delicious treats found
+              <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                No products found
               </h3>
-              <p className="text-gray-600 leading-relaxed text-lg">
-                Try adjusting your search criteria or browse our full collection
-                of handcrafted cakes and pastries.
+              <p className="text-slate-600 font-light text-lg">
+                Try adjusting your search criteria or browse our full
+                collection.
               </p>
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {filteredProducts.map((product: Product, index) => (
-              <div
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {filteredProducts.map((product: Product) => (
+              <ProductCard
                 key={product._id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <ProductCard
-                  product={product}
-                  isWishlisted={wishlist.includes(product._id || "")}
-                  onToggleWishlist={() => toggleWishlist(product._id || "")}
-                />
-              </div>
+                product={product}
+                isWishlisted={wishlist.includes(product._id || "")}
+                onToggleWishlist={() => toggleWishlist(product._id)}
+              />
             ))}
           </div>
         )}
@@ -276,191 +279,130 @@ interface ProductCardProps {
   onToggleWishlist: () => void;
 }
 
-function ProductCard({
-  product,
-  isWishlisted,
-  onToggleWishlist,
-}: ProductCardProps) {
+function ProductCard({ product }: ProductCardProps) {
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
     navigate({ to: `/app/products/${product._id}` });
   };
 
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case "Cake":
+        return "🍰";
+      case "Pastry":
+        return "🥐";
+      case "Cookie":
+        return "🍪";
+      case "Bread":
+        return "🍞";
+      default:
+        return "📦";
+    }
+  };
+
   return (
-    <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-500 border-0 shadow-lg bg-white rounded-3xl py-0 gap-0">
-      <div className="flex flex-col lg:flex-row h-auto lg:h-96">
-        {/* Enhanced Image Section */}
-        <div className="relative w-full lg:w-2/5 h-72 lg:h-full overflow-hidden">
-          {/* Background Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100" />
+    <div className="group hover:shadow-2xl transition-all duration-500 border border-slate-200 shadow-lg overflow-hidden bg-white rounded-3xl hover:-translate-y-2">
+      <div className="relative overflow-hidden">
+        <img
+          src={
+            product.images[0] ||
+            "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+          }
+          alt={product.name}
+          className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-          {/* Product Image */}
-          <div className="relative w-full h-full flex items-center justify-center p-6">
-            {product.images[0] ? (
-              <img
-                src={product.images[0] || "/placeholder.svg"}
-                alt={product.name}
-                className="w-full h-full object-contain group-hover:scale-110 transition-all duration-700 ease-out drop-shadow-lg"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center group-hover:scale-110 transition-all duration-700 ease-out">
-                <Cake className="h-24 w-24 text-amber-500 drop-shadow-lg" />
-              </div>
-            )}
-          </div>
-
-          {/* Overlay Effects */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-          {/* Floating Elements */}
-          <div className="absolute inset-0 pointer-events-none">
-            {/* Status Badge */}
-            <div className="absolute top-6 left-6">
-              <Badge
-                className={`${
-                  product.isAvailable
-                    ? "bg-gradient-to-r from-emerald-500 to-green-500"
-                    : "bg-gradient-to-r from-red-500 to-rose-500"
-                } text-white font-semibold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm border-0`}
-              >
-                {product.isAvailable ? (
-                  <span className="flex items-center gap-1.5">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Available
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5" />
-                    Coming Soon
-                  </span>
-                )}
-              </Badge>
-            </div>
-
-            {/* Category Badge */}
-            <div className="absolute bottom-6 left-6">
-              <Badge className="bg-white/90 text-amber-700 font-semibold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm border-0">
-                <span className="flex items-center gap-1.5">
-                  <Cake className="h-3.5 w-3.5" />
-                  {product.category}
-                </span>
-              </Badge>
-            </div>
-          </div>
-
-          {/* Wishlist Button */}
-          <div className="absolute top-6 right-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onToggleWishlist}
-              className="bg-white/90 backdrop-blur-sm rounded-full p-3 hover:bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border-0"
-            >
-              <Heart
-                className={`h-4 w-4 transition-all duration-300 ${
-                  isWishlisted
-                    ? "text-red-500 fill-current scale-110"
-                    : "text-gray-600"
-                }`}
-              />
-            </Button>
-          </div>
+        {/* Category Badge */}
+        <div className="absolute top-4 left-4">
+          <Badge className="bg-white/90 backdrop-blur-sm text-slate-700 border border-slate-200 font-medium px-4 py-2 rounded-full shadow-lg">
+            <span className="mr-2">{getCategoryIcon(product.category)}</span>
+            {product.category}
+          </Badge>
         </div>
 
-        {/* Enhanced Content Section */}
-        <div className="flex-1 p-8 flex flex-col justify-between bg-gradient-to-br from-white to-gray-50/50">
-          <div className="space-y-6">
-            {/* Header */}
-            <div className="space-y-3">
-              <div className="flex items-start justify-between gap-4">
-                <CardTitle className="text-2xl lg:text-3xl font-bold text-gray-900 line-clamp-2 group-hover:text-amber-600 transition-colors duration-300 leading-tight">
-                  {product.name}
-                </CardTitle>
+        {/* Availability Badge */}
+        <div className="absolute top-4 right-4">
+          <Badge
+            className={`${
+              product.isAvailable
+                ? "bg-green-500/90 text-white border-green-600"
+                : "bg-slate-500/90 text-white border-slate-600"
+            } backdrop-blur-sm border font-medium px-4 py-2 rounded-full shadow-lg`}
+          >
+            <div
+              className={`w-2 h-2 rounded-full mr-2 ${
+                product.isAvailable ? "bg-white" : "bg-slate-300"
+              }`}
+            />
+            {product.isAvailable ? "In Stock" : "Out of Stock"}
+          </Badge>
+        </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-2 bg-amber-50 rounded-full px-3 py-1.5 shrink-0">
-                  <div className="flex items-center">
-                    <Star className="h-4 w-4 text-amber-400 fill-current" />
-                    <span className="text-sm font-semibold text-gray-900 ml-1">
-                      {4.8}
-                    </span>
-                  </div>
-                  <span className="text-xs text-gray-600">({123})</span>
-                </div>
-              </div>
-
-              <CardDescription className="text-gray-600 line-clamp-3 leading-relaxed text-base">
-                {product.description}
-              </CardDescription>
-            </div>
-
-            {/* Product Details */}
-            <div className="space-y-4">
-              {product.ingredients && product.ingredients.length > 0 && (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                    <ChefHat className="h-4 w-4 text-amber-500" />
-                    Key Ingredients
-                  </div>
-                  <div className="bg-amber-50 rounded-2xl px-4 py-3">
-                    <p className="text-sm text-gray-700 line-clamp-2">
-                      {product.ingredients.slice(0, 4).join(", ")}
-                      {product.ingredients.length > 4 && "..."}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {product.allergens && product.allergens.length > 0 && (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-red-600">
-                    <AlertTriangle className="h-4 w-4" />
-                    Allergen Information
-                  </div>
-                  <div className="bg-red-50 rounded-2xl px-4 py-3">
-                    <p className="text-sm text-red-700 line-clamp-1">
-                      Contains: {product.allergens.join(", ")}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="flex items-center justify-between pt-6 border-t border-gray-100">
-            <div className="space-y-1">
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                  ₹{product.price}
-                </span>
-                <span className="text-sm text-gray-500 font-medium">
-                  per piece
-                </span>
-              </div>
-              {!product.isAvailable && (
-                <div className="flex items-center gap-2 text-red-500 text-sm font-medium">
-                  <Clock className="h-4 w-4" />
-                  Currently Unavailable
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                onClick={handleViewDetails}
-                className="rounded-2xl px-6 py-3 font-semibold border-2 border-amber-200 text-amber-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 hover:scale-105"
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                Details
-              </Button>
-            </div>
-          </div>
+        {/* Quick View Overlay */}
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <Button
+            onClick={handleViewDetails}
+            className="bg-white text-slate-900 hover:bg-slate-100 px-6 py-3 rounded-full font-medium shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            Quick View
+          </Button>
         </div>
       </div>
-    </Card>
+
+      <div className="p-6">
+        {/* Product Info */}
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xl font-bold text-slate-900 line-clamp-1 mb-1">
+              {product.name}
+            </h3>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`h-4 w-4 ${
+                      i < 4 ? "text-amber-400 fill-current" : "text-slate-300"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-slate-600 font-medium">
+                4.8 (24 reviews)
+              </span>
+            </div>
+          </div>
+          <div className="text-right ml-4">
+            <span className="text-2xl font-bold text-slate-900">
+              ₹{product.price}
+            </span>
+            <div className="text-sm text-slate-500 font-light">per piece</div>
+          </div>
+        </div>
+
+        {/* Description */}
+        <p className="text-slate-600 bg-slate-100 mb-2 px-1 rounded-sm line-clamp-2 font-light text-sm leading-relaxed h-12">
+          {product.description}
+        </p>
+
+        {/* Like Button - Moved to content section */}
+        <div className="flex items-center justify-between ">
+          <div></div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleViewDetails}
+            className="border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 rounded-xl px-4 py-2 font-medium transition-all duration-200"
+          >
+            View Details
+            <ArrowUpRight className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 

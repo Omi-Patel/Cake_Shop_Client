@@ -8,18 +8,14 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Heart,
-  ShoppingCart,
   Star,
   ChefHat,
   AlertTriangle,
-  Clock,
   ArrowLeft,
   Cake,
   Shield,
   Award,
   Truck,
-  Plus,
-  Minus,
   Share2,
   Pencil,
   Trash,
@@ -54,7 +50,6 @@ function ProductDetailsPage() {
   const navigate = useNavigate();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
 
   const toggleWishlist = () => {
     setIsWishlisted(!isWishlisted);
@@ -73,13 +68,13 @@ function ProductDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pt-20">
       {/* Navigation */}
-      <div className="container mx-auto px-6 py-6">
-        <div className="flex justify-between items-center">
+      <div className="container mx-auto px-6 py-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <Button
             variant="ghost"
-            className="hover:bg-gray-100 rounded-xl"
+            className="hover:bg-slate-100 rounded-lg self-start"
             onClick={() => navigate({ to: "/app/products" })}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -87,10 +82,10 @@ function ProductDetailsPage() {
           </Button>
 
           {getToken() && (
-            <div className="flex sm:flex-row flex-col gap-2 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center w-full sm:w-auto">
               <Button
                 variant="outline"
-                className="hover:bg-gray-100 rounded-xl"
+                className="hover:bg-slate-100 border-slate-200 rounded-lg w-full sm:w-auto"
                 onClick={() => {
                   if (!product._id) return;
                   navigate({
@@ -105,7 +100,7 @@ function ProductDetailsPage() {
 
               <Button
                 variant="destructive"
-                className="hover:bg-red-800 rounded-xl "
+                className="hover:bg-red-800 rounded-lg w-full sm:w-auto"
                 onClick={() => {
                   if (!product._id) return;
                   handleDeleteProduct(product._id);
@@ -119,12 +114,12 @@ function ProductDetailsPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+      <div className="container mx-auto px-6 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-8 lg:mb-12">
           {/* Product Images */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="relative rounded-2xl overflow-hidden bg-gray-50 aspect-square">
+            <div className="relative rounded-2xl overflow-hidden bg-slate-50 aspect-square">
               {images[selectedImageIndex] ? (
                 <img
                   src={images[selectedImageIndex]}
@@ -133,7 +128,7 @@ function ProductDetailsPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <Cake className="w-24 h-24 text-gray-300" />
+                  <Cake className="w-24 h-24 text-slate-300" />
                 </div>
               )}
 
@@ -143,22 +138,22 @@ function ProductDetailsPage() {
                   variant="ghost"
                   size="sm"
                   onClick={toggleWishlist}
-                  className="bg-white/90 hover:bg-white rounded-full p-2 shadow-md"
+                  className="bg-white/90 hover:bg-white rounded-full p-2 shadow-lg"
                 >
                   <Heart
                     className={`h-5 w-5 ${
                       isWishlisted
-                        ? "text-red-500 fill-current"
-                        : "text-gray-600"
+                        ? "text-rose-500 fill-current"
+                        : "text-slate-600"
                     }`}
                   />
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="bg-white/90 hover:bg-white rounded-full p-2 shadow-md"
+                  className="bg-white/90 hover:bg-white rounded-full p-2 shadow-lg"
                 >
-                  <Share2 className="h-5 w-5 text-gray-600" />
+                  <Share2 className="h-5 w-5 text-slate-600" />
                 </Button>
               </div>
             </div>
@@ -172,8 +167,8 @@ function ProductDetailsPage() {
                     onClick={() => setSelectedImageIndex(index)}
                     className={`flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
                       selectedImageIndex === index
-                        ? "border-amber-500"
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-slate-900"
+                        : "border-slate-200 hover:border-slate-300"
                     }`}
                   >
                     {image ? (
@@ -183,8 +178,8 @@ function ProductDetailsPage() {
                         className="w-20 h-20 object-contain"
                       />
                     ) : (
-                      <div className="w-20 h-20 bg-gray-100 flex items-center justify-center">
-                        <Cake className="w-6 h-6 text-gray-400" />
+                      <div className="w-20 h-20 bg-slate-100 flex items-center justify-center">
+                        <Cake className="w-6 h-6 text-slate-400" />
                       </div>
                     )}
                   </button>
@@ -194,22 +189,22 @@ function ProductDetailsPage() {
           </div>
 
           {/* Product Details */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {/* Header */}
             <div>
               <Badge
                 variant="secondary"
-                className="mb-4 bg-amber-100 text-amber-700"
+                className="mb-3 lg:mb-4 bg-slate-100 text-slate-700 border border-slate-200"
               >
                 {product.category}
               </Badge>
 
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h1 className="text-2xl lg:text-3xl xl:text-4xl font-medium text-slate-900 mb-3 lg:mb-4">
                 {product.name}
               </h1>
 
               {/* Rating */}
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex flex-wrap items-center gap-3 lg:gap-4 mb-4 lg:mb-6">
                 <div className="flex items-center gap-1">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
@@ -219,23 +214,27 @@ function ProductDetailsPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-gray-700 font-medium ml-1">4.8</span>
+                  <span className="text-slate-700 font-medium ml-1">4.8</span>
                 </div>
-                <span className="text-gray-500 text-sm">120+ reviews</span>
+                <span className="text-slate-500 text-sm font-light">
+                  120+ reviews
+                </span>
                 <Badge
                   variant="outline"
-                  className="text-green-600 border-green-200"
+                  className="text-emerald-600 border-emerald-200"
                 >
                   Verified Quality
                 </Badge>
               </div>
 
               {/* Price */}
-              <div className="bg-gray-50 rounded-2xl p-6 mb-6">
-                <div className="flex items-center justify-between">
+              <div className="bg-slate-50 rounded-2xl p-4 lg:p-6 mb-4 lg:mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Price</p>
-                    <p className="text-3xl font-bold text-gray-900">
+                    <p className="text-sm text-slate-600 mb-1 font-light">
+                      Price
+                    </p>
+                    <p className="text-2xl lg:text-3xl font-semibold text-slate-900">
                       ₹{product.price}
                     </p>
                   </div>
@@ -243,8 +242,8 @@ function ProductDetailsPage() {
                     variant={product.isAvailable ? "default" : "secondary"}
                     className={
                       product.isAvailable
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-600"
+                        ? "bg-emerald-100 text-emerald-700 border-emerald-200 self-start sm:self-auto"
+                        : "bg-slate-100 text-slate-600 border-slate-200 self-start sm:self-auto"
                     }
                   >
                     {product.isAvailable ? "Available Now" : "Coming Soon"}
@@ -254,27 +253,27 @@ function ProductDetailsPage() {
             </div>
 
             {/* Description */}
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            <div className="bg-slate-50 rounded-2xl p-4 lg:p-6">
+              <h3 className="text-lg font-medium text-slate-900 mb-3">
                 Description
               </h3>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-slate-700 leading-relaxed font-light">
                 {product.description}
               </p>
             </div>
 
             {/* Ingredients */}
             {product.ingredients && product.ingredients.length > 0 && (
-              <div className="bg-gray-50 rounded-2xl p-6">
-                <div className="flex items-center text-gray-800 mb-4">
-                  <ChefHat className="h-5 w-5 mr-2 text-amber-500" />
-                  <h3 className="text-lg font-semibold">Ingredients</h3>
+              <div className="bg-slate-50 rounded-2xl p-4 lg:p-6">
+                <div className="flex items-center text-slate-800 mb-4">
+                  <ChefHat className="h-5 w-5 mr-2 text-slate-600" />
+                  <h3 className="text-lg font-medium">Ingredients</h3>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {product.ingredients.map((ingredient, index) => (
                     <div key={index} className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
-                      <span className="text-gray-700 text-sm">
+                      <div className="w-1.5 h-1.5 bg-slate-600 rounded-full"></div>
+                      <span className="text-slate-700 text-sm font-light">
                         {ingredient}
                       </span>
                     </div>
@@ -285,128 +284,58 @@ function ProductDetailsPage() {
 
             {/* Allergens */}
             {product.allergens && product.allergens.length > 0 && (
-              <div className="bg-red-50 rounded-2xl p-6 border border-red-100">
-                <div className="flex items-center text-red-700 mb-3">
+              <div className="bg-rose-50 rounded-2xl p-4 lg:p-6 border border-rose-100">
+                <div className="flex items-center text-rose-700 mb-3">
                   <AlertTriangle className="h-5 w-5 mr-2" />
-                  <h3 className="text-lg font-semibold">
-                    Allergen Information
-                  </h3>
+                  <h3 className="text-lg font-medium">Allergen Information</h3>
                 </div>
-                <p className="text-red-700 font-medium">
+                <p className="text-rose-700 font-medium">
                   Contains: {product.allergens.join(", ")}
                 </p>
               </div>
             )}
-
-            {/* Quantity Selector */}
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Quantity
-              </h3>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center border border-gray-200 rounded-xl">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="rounded-xl"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                  <span className="text-lg font-semibold w-12 text-center">
-                    {quantity}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="rounded-xl"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600">Total</p>
-                  <p className="text-xl font-bold text-gray-900">
-                    ₹{product.price * quantity}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1 border-gray-200 hover:bg-gray-50 rounded-xl"
-                  onClick={toggleWishlist}
-                >
-                  <Heart
-                    className={`h-4 w-4 mr-2 ${
-                      isWishlisted
-                        ? "text-red-500 fill-current"
-                        : "text-gray-600"
-                    }`}
-                  />
-                  {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-                </Button>
-                <Button
-                  disabled={!product.isAvailable}
-                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl"
-                >
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  Add to Cart
-                </Button>
-              </div>
-
-              {!product.isAvailable && (
-                <div className="flex items-center justify-center text-red-600 bg-red-50 rounded-xl py-3">
-                  <Clock className="h-4 w-4 mr-2" />
-                  <span className="font-medium">Currently out of stock</span>
-                </div>
-              )}
-            </div>
           </div>
         </div>
 
         {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <Card className="border border-gray-200 rounded-2xl">
-            <CardContent className="p-6 text-center">
-              <div className="bg-green-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Shield className="h-8 w-8 text-green-600" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
+          <Card className="border border-slate-200 rounded-2xl shadow-lg">
+            <CardContent className="p-4 lg:p-6 text-center">
+              <div className="bg-slate-100 rounded-2xl p-3 lg:p-4 w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-3 lg:mb-4 flex items-center justify-center">
+                <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-slate-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="font-medium text-slate-900 mb-2 text-sm lg:text-base">
                 Quality Guarantee
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-slate-600 text-xs lg:text-sm font-light">
                 100% fresh ingredients, baked daily with expertise
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border border-gray-200 rounded-2xl">
-            <CardContent className="p-6 text-center">
-              <div className="bg-amber-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Award className="h-8 w-8 text-amber-600" />
+          <Card className="border border-slate-200 rounded-2xl shadow-lg">
+            <CardContent className="p-4 lg:p-6 text-center">
+              <div className="bg-slate-100 rounded-2xl p-3 lg:p-4 w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-3 lg:mb-4 flex items-center justify-center">
+                <Award className="h-6 w-6 lg:h-8 lg:w-8 text-slate-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Artisan Made</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="font-medium text-slate-900 mb-2 text-sm lg:text-base">
+                Artisan Made
+              </h3>
+              <p className="text-slate-600 text-xs lg:text-sm font-light">
                 Handcrafted by expert bakers with years of experience
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border border-gray-200 rounded-2xl">
-            <CardContent className="p-6 text-center">
-              <div className="bg-blue-100 rounded-2xl p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Truck className="h-8 w-8 text-blue-600" />
+          <Card className="border border-slate-200 rounded-2xl shadow-lg sm:col-span-2 lg:col-span-1">
+            <CardContent className="p-4 lg:p-6 text-center">
+              <div className="bg-slate-100 rounded-2xl p-3 lg:p-4 w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-3 lg:mb-4 flex items-center justify-center">
+                <Truck className="h-6 w-6 lg:h-8 lg:w-8 text-slate-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="font-medium text-slate-900 mb-2 text-sm lg:text-base">
                 Fast Delivery
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-slate-600 text-xs lg:text-sm font-light">
                 Same-day delivery available for orders before 2 PM
               </p>
             </CardContent>
@@ -414,14 +343,17 @@ function ProductDetailsPage() {
         </div>
 
         {/* Reviews Section */}
-        <Card className="border border-gray-200 rounded-2xl">
-          <CardContent className="p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
+        <Card className="border border-slate-200 rounded-2xl shadow-lg">
+          <CardContent className="p-6 lg:p-8">
+            <h3 className="text-xl lg:text-2xl font-medium text-slate-900 mb-4 lg:mb-6">
               Customer Reviews
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
               {[1, 2].map((review) => (
-                <div key={review} className="bg-gray-50 rounded-2xl p-6">
+                <div
+                  key={review}
+                  className="bg-slate-50 rounded-2xl p-4 lg:p-6"
+                >
                   <div className="flex items-center mb-3">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
@@ -431,13 +363,13 @@ function ProductDetailsPage() {
                         />
                       ))}
                     </div>
-                    <span className="ml-2 text-gray-700 font-medium">5.0</span>
+                    <span className="ml-2 text-slate-700 font-medium">5.0</span>
                   </div>
-                  <p className="text-gray-700 mb-3 italic">
+                  <p className="text-slate-700 mb-3 italic font-light text-sm lg:text-base">
                     "Absolutely divine! The texture was perfect and the flavors
                     were incredible. Will definitely order again!"
                   </p>
-                  <p className="text-gray-600 font-medium text-sm">
+                  <p className="text-slate-600 font-medium text-xs lg:text-sm">
                     - Happy Customer
                   </p>
                 </div>
